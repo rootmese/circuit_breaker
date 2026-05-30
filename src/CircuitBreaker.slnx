@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CircuitBreaker.Core/CircuitBreaker.Core.csproj" />
+  <Project Path="CircuitBreaker.Sample/CircuitBreaker.Sample.csproj" />
+</Solution>

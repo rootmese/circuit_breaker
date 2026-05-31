@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Caching.Distributed;
 using CircuitBreaker.Core;
 
 namespace CircuitBreaker.Sample
@@ -16,10 +17,19 @@ namespace CircuitBreaker.Sample
             // Configure DI container
             var services = new ServiceCollection();
 
-            services.AddSingleton<CircuitBreakerState>(provider => new CircuitBreakerState(
-                failureThreshold: 2,
-                resetTimeout: TimeSpan.FromSeconds(5) // shortened for demo purposes
-            ));
+            // Register standard distributed in-memory cache
+            services.AddDistributedMemoryCache();
+
+            services.AddSingleton<CircuitBreakerState>(provider =>
+            {
+                var cache = provider.GetRequiredService<IDistributedCache>();
+                return new CircuitBreakerState(
+                    cache: cache,
+                    resourceName: "MyService",
+                    failureThreshold: 2,
+                    resetTimeout: TimeSpan.FromSeconds(5) // shortened for demo purposes
+                );
+            });
             services.AddSingleton<ICircuitBreaker, Core.CircuitBreaker>();
 
             services.AddTransient<RealService>();

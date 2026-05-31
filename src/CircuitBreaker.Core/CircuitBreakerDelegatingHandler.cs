@@ -19,7 +19,7 @@ namespace CircuitBreaker.Core
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (!_breaker.AllowCall())
+            if (!await _breaker.AllowCallAsync())
             {
                 Console.WriteLine("[CB Handler] Execution blocked (circuit is open)");
                 throw new CircuitBrokenException("Circuit is open. HTTP request blocked.");
@@ -31,18 +31,18 @@ namespace CircuitBreaker.Core
                 
                 if (response.IsSuccessStatusCode)
                 {
-                    _breaker.RecordSuccess();
+                    await _breaker.RecordSuccessAsync();
                 }
                 else
                 {
-                    _breaker.RecordFailure();
+                    await _breaker.RecordFailureAsync();
                 }
 
                 return response;
             }
             catch (Exception)
             {
-                _breaker.RecordFailure();
+                await _breaker.RecordFailureAsync();
                 throw;
             }
         }

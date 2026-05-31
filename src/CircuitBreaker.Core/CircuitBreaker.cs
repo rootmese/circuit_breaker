@@ -15,31 +15,31 @@ namespace CircuitBreaker.Core
             _state = state ?? throw new ArgumentNullException(nameof(state));
         }
 
-        public bool AllowCall() => _state.AllowCall();
+        public async Task<bool> AllowCallAsync() => await _state.AllowCallAsync();
 
-        public void RecordSuccess() => _state.RecordSuccess();
+        public async Task RecordSuccessAsync() => await _state.RecordSuccessAsync();
 
-        public void RecordFailure() => _state.RecordFailure();
+        public async Task RecordFailureAsync() => await _state.RecordFailureAsync();
 
         public async Task<T> ExecuteAsync<T>(Func<Task<T>> action)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
 
-            if (!AllowCall())
+            if (!await AllowCallAsync())
             {
-                Console.WriteLine("[CB] Execution blocked (circuit is open)");
+                Console.WriteLine($"[CB - {_state.ResourceName}] Execution blocked (circuit is open)");
                 throw new CircuitBrokenException("Circuit is open. Call blocked.");
             }
 
             try
             {
                 var result = await action();
-                RecordSuccess();
+                await RecordSuccessAsync();
                 return result;
             }
             catch (Exception)
             {
-                RecordFailure();
+                await RecordFailureAsync();
                 throw;
             }
         }
@@ -48,20 +48,20 @@ namespace CircuitBreaker.Core
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
 
-            if (!AllowCall())
+            if (!await AllowCallAsync())
             {
-                Console.WriteLine("[CB] Execution blocked (circuit is open)");
+                Console.WriteLine($"[CB - {_state.ResourceName}] Execution blocked (circuit is open)");
                 throw new CircuitBrokenException("Circuit is open. Call blocked.");
             }
 
             try
             {
                 await action();
-                RecordSuccess();
+                await RecordSuccessAsync();
             }
             catch (Exception)
             {
-                RecordFailure();
+                await RecordFailureAsync();
                 throw;
             }
         }

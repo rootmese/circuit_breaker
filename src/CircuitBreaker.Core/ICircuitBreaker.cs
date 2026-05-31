@@ -12,18 +12,18 @@ namespace CircuitBreaker.Core
         /// Checks if the circuit breaker allows a call to be made.
         /// </summary>
         /// <returns>True if the call is allowed; otherwise, false.</returns>
-        bool AllowCall();
+        Task<bool> AllowCallAsync();
 
         /// <summary>
         /// Records a successful execution, resetting the failure count.
         /// </summary>
-        void RecordSuccess();
+        Task RecordSuccessAsync();
 
         /// <summary>
         /// Records a failed execution, incrementing the failure count.
         /// If the failures reach the threshold, the circuit breaker opens.
         /// </summary>
-        void RecordFailure();
+        Task RecordFailureAsync();
 
         /// <summary>
         /// Executes an asynchronous operation that returns a result through the circuit breaker.

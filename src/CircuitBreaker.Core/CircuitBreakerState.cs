@@ -1,67 +1,86 @@
 using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace CircuitBreaker.Core
 {
     /// <summary>
-    /// Thread-safe state machine managing the state transitions of the Circuit Breaker.
+    /// Manages the state transitions of the Circuit Breaker using a distributed cache store.
     /// </summary>
     public class CircuitBreakerState
     {
         public enum CircuitState { Closed, Open, HalfOpen }
 
-        public CircuitState State { get; private set; } = CircuitState.Closed;
-
-        private int _failures = 0;
+        private readonly IDistributedCache _cache;
         private readonly int _failureThreshold;
-        private DateTime _openedTime;
         private readonly TimeSpan _resetTimeout;
-        private readonly object _lock = new object();
 
-        public CircuitBreakerState(int failureThreshold = 2, TimeSpan? resetTimeout = null)
+        public string ResourceName { get; }
+
+        public CircuitBreakerState(IDistributedCache cache, string resourceName, int failureThreshold = 2, TimeSpan? resetTimeout = null)
         {
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+            ResourceName = string.IsNullOrWhiteSpace(resourceName) ? throw new ArgumentException("Resource name cannot be null or empty.", nameof(resourceName)) : resourceName;
             _failureThreshold = failureThreshold;
             _resetTimeout = resetTimeout ?? TimeSpan.FromSeconds(10);
         }
 
-        public bool AllowCall()
+        private string GetStateKey() => $"cb:{ResourceName}:state";
+        private string GetFailuresKey() => $"cb:{ResourceName}:failures";
+        private string GetOpenedTimeKey() => $"cb:{ResourceName}:openedTime";
+
+        public async Task<CircuitState> GetCurrentStateAsync()
         {
-            lock (_lock)
+            var stateStr = await _cache.GetStringAsync(GetStateKey()) ?? "Closed";
+            if (Enum.TryParse<CircuitState>(stateStr, true, out var state))
             {
-                if (State == CircuitState.Open)
+                return state;
+            }
+            return CircuitState.Closed;
+        }
+
+        public async Task<bool> AllowCallAsync()
+        {
+            var state = await GetCurrentStateAsync();
+            if (state == CircuitState.Open)
+            {
+                var openedTimeStr = await _cache.GetStringAsync(GetOpenedTimeKey());
+                if (long.TryParse(openedTimeStr, out var openedTimeMs))
                 {
-                    if (DateTime.UtcNow - _openedTime > _resetTimeout)
+                    var openedTime = DateTimeOffset.FromUnixTimeMilliseconds(openedTimeMs);
+                    if (DateTimeOffset.UtcNow - openedTime > _resetTimeout)
                     {
-                        State = CircuitState.HalfOpen;
-                        Console.WriteLine("[CB] Half-Open: testing service recovery");
+                        await _cache.SetStringAsync(GetStateKey(), CircuitState.HalfOpen.ToString());
+                        Console.WriteLine($"[CB - {ResourceName}] Half-Open: testing service recovery");
                         return true;
                     }
-                    return false;
                 }
-                return true;
+                return false;
             }
+            return true;
         }
 
-        public void RecordSuccess()
+        public async Task RecordSuccessAsync()
         {
-            lock (_lock)
-            {
-                _failures = 0;
-                State = CircuitState.Closed;
-                Console.WriteLine("[CB] Circuit closed again");
-            }
+            await _cache.SetStringAsync(GetStateKey(), CircuitState.Closed.ToString());
+            await _cache.SetStringAsync(GetFailuresKey(), "0");
+            Console.WriteLine($"[CB - {ResourceName}] Circuit closed again");
         }
 
-        public void RecordFailure()
+        public async Task RecordFailureAsync()
         {
-            lock (_lock)
+            var failuresStr = await _cache.GetStringAsync(GetFailuresKey()) ?? "0";
+            int.TryParse(failuresStr, out var failures);
+            failures++;
+
+            await _cache.SetStringAsync(GetFailuresKey(), failures.ToString());
+
+            var state = await GetCurrentStateAsync();
+            if (failures >= _failureThreshold && state != CircuitState.Open)
             {
-                _failures++;
-                if (_failures >= _failureThreshold && State != CircuitState.Open)
-                {
-                    State = CircuitState.Open;
-                    _openedTime = DateTime.UtcNow;
-                    Console.WriteLine("[CB] Circuit is OPEN!");
-                }
+                await _cache.SetStringAsync(GetStateKey(), CircuitState.Open.ToString());
+                await _cache.SetStringAsync(GetOpenedTimeKey(), DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
+                Console.WriteLine($"[CB - {ResourceName}] Circuit is OPEN!");
             }
         }
     }

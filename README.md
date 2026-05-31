@@ -112,17 +112,26 @@ Se FailureRatio ≥ 0.5 E total ≥ MinimumThroughput → ABRE
 text
 
 ### Transições de Estado
-   ┌──────────┐  taxa de falha   ┌──────────┐  BreakDuration   ┌──────────────┐
-   │  CLOSED  │ ≥ FailureRatio   │   OPEN   │     expira       │  HALF-OPEN   │
-   │          ├─────────────────►│          ├─────────────────►│              │
-   │ (normal) │ AND throughput   │(bloqueia │                  │ (testa 1 req)│
-   └──────────┘ ≥ minimum        │   tudo)  │                  └──────┬───────┘
-        ▲                        └──────────┘                         │
-        │                             ▲                               │
-        │      requisição ok          │      requisição falha         │
-        └─────────────────────────────┼───────────────────────────────┘
-                                      │
-                                      └───────────────────────────────
+
+```text
+                    FailureRatio atingido
+          ┌───────────────────────────────────────┐
+          │                                       ▼
+
+   ┌──────────┐                          ┌──────────┐
+   │  CLOSED  │                          │   OPEN   │
+   └────┬─────┘                          └────┬─────┘
+        ▲                                     │
+        │                                     │ BreakDuration
+        │                                     │ expira
+        │                                     ▼
+        │                              ┌──────────────┐
+        │                              │  HALF-OPEN   │
+        │                              └──────┬───────┘
+        │                                     │
+        │      sucesso                        │ falha
+        └─────────────────────────────────────┘
+```
 
 ### Proteções de Concorrência
 

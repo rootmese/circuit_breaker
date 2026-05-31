@@ -8,28 +8,28 @@
     ".NETCoreApp,Version=v10.0": {
       "CircuitBreaker.Core/1.0.0": {
         "dependencies": {
-          "Microsoft.Extensions.Caching.Abstractions": "10.0.8"
+          "Polly": "8.6.6"
         },
         "runtime": {
           "CircuitBreaker.Core.dll": {}
         }
       },
-      "Microsoft.Extensions.Caching.Abstractions/10.0.8": {
+      "Polly/8.6.6": {
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "10.0.8"
+          "Polly.Core": "8.6.6"
         },
         "runtime": {
-          "lib/net10.0/Microsoft.Extensions.Caching.Abstractions.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.826.23019"
+          "lib/net6.0/Polly.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.6.6.5454"
           }
         }
       },
-      "Microsoft.Extensions.Primitives/10.0.8": {
+      "Polly.Core/8.6.6": {
         "runtime": {
-          "lib/net10.0/Microsoft.Extensions.Primitives.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.826.23019"
+          "lib/net8.0/Polly.Core.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.6.6.5454"
           }
         }
       }
@@ -41,19 +41,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Microsoft.Extensions.Caching.Abstractions/10.0.8": {
+    "Polly/8.6.6": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-EoK2TwVR1daxmfXUPnvIYZSk5XQjHe45sGekox4kvMt88KQZQhDVzYW5Na5+oNwTuRpE48hipyGJg12F1Tm70w==",
-      "path": "microsoft.extensions.caching.abstractions/10.0.8",
-      "hashPath": "microsoft.extensions.caching.abstractions.10.0.8.nupkg.sha512"
+      "sha512": "sha512-czKHYJ6uGowPijuZt4kgF4njfGvWxVZ8mKBcrZ9iEtwDe9HKdF0ug6p6TwUG8EHuuufgbDU//rSBFebt5/0Fyw==",
+      "path": "polly/8.6.6",
+      "hashPath": "polly.8.6.6.nupkg.sha512"
     },
-    "Microsoft.Extensions.Primitives/10.0.8": {
+    "Polly.Core/8.6.6": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-OBPo4nYhMyIbtueoC10CBm6AGAbo/A9IV8QQ/6ryZS7VvmqpGT7hunazeHLxFawRzn3oLOq4jhqhpBX4tfswWQ==",
-      "path": "microsoft.extensions.primitives/10.0.8",
-      "hashPath": "microsoft.extensions.primitives.10.0.8.nupkg.sha512"
+      "sha512": "sha512-lCBL9mmhF9TZxHG3beVRkyjlLohkIC464xIAq7J7Y59C+z42hmsdUaeCKl2SIAYertOUU5TeBXyQDLDQGIKePQ==",
+      "path": "polly.core/8.6.6",
+      "hashPath": "polly.core.8.6.6.nupkg.sha512"
     }
   }
 }

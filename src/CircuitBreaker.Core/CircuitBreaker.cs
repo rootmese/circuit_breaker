@@ -1,69 +1,61 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Polly;
 
 namespace CircuitBreaker.Core
 {
     /// <summary>
-    /// Core implementation of the Circuit Breaker pattern.
+    /// Encapsulates Polly's ResiliencePipeline to implement the Circuit Breaker pattern.
     /// </summary>
     public class CircuitBreaker : ICircuitBreaker
     {
-        private readonly CircuitBreakerState _state;
+        private readonly ResiliencePipeline _pipeline;
+        private volatile int _state; // backing field for thread-safe reads
 
-        public CircuitBreaker(CircuitBreakerState state)
+        public CircuitBreaker(ResiliencePipeline pipeline)
         {
-            _state = state ?? throw new ArgumentNullException(nameof(state));
+            _pipeline = pipeline ?? throw new ArgumentNullException(nameof(pipeline));
         }
 
-        public async Task<bool> AllowCallAsync() => await _state.AllowCallAsync();
+        /// <inheritdoc />
+        public CircuitState State => (CircuitState)_state;
 
-        public async Task RecordSuccessAsync() => await _state.RecordSuccessAsync();
+        /// <summary>
+        /// Updates the circuit state. Called internally by <see cref="CircuitBreakerFactory"/> event callbacks.
+        /// </summary>
+        internal void UpdateState(CircuitState state) => _state = (int)state;
 
-        public async Task RecordFailureAsync() => await _state.RecordFailureAsync();
-
+        /// <inheritdoc />
         public async Task<T> ExecuteAsync<T>(Func<Task<T>> action)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
 
-            if (!await AllowCallAsync())
-            {
-                Console.WriteLine($"[CB - {_state.ResourceName}] Execution blocked (circuit is open)");
-                throw new CircuitBrokenException("Circuit is open. Call blocked.");
-            }
-
-            try
-            {
-                var result = await action();
-                await RecordSuccessAsync();
-                return result;
-            }
-            catch (Exception)
-            {
-                await RecordFailureAsync();
-                throw;
-            }
+            return await _pipeline.ExecuteAsync(async _ => await action());
         }
 
+        /// <inheritdoc />
+        public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default)
+        {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
+            return await _pipeline.ExecuteAsync(async token => await action(token), cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task ExecuteAsync(Func<Task> action)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
 
-            if (!await AllowCallAsync())
-            {
-                Console.WriteLine($"[CB - {_state.ResourceName}] Execution blocked (circuit is open)");
-                throw new CircuitBrokenException("Circuit is open. Call blocked.");
-            }
+            await _pipeline.ExecuteAsync(async _ => await action());
+        }
 
-            try
-            {
-                await action();
-                await RecordSuccessAsync();
-            }
-            catch (Exception)
-            {
-                await RecordFailureAsync();
-                throw;
-            }
+        /// <inheritdoc />
+        public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default)
+        {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
+            await _pipeline.ExecuteAsync(async token => await action(token), cancellationToken);
         }
     }
 }

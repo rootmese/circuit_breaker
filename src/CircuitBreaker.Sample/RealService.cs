@@ -13,8 +13,8 @@ namespace CircuitBreaker.Sample
             _counter++;
             Console.WriteLine($"[REAL] Attempt {_counter}");
 
-            // Simulates failure on the first 3 calls
-            if (_counter <= 3)
+            // Simulates failure on the first 2 calls
+            if (_counter <= 2)
             {
                 throw new HttpRequestException("Simulated network failure");
             }

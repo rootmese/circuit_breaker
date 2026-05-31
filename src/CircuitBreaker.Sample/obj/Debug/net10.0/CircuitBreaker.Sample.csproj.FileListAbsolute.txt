@@ -34,13 +34,8 @@ C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sampl
 C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\CircuitBreaker.Sample.runtimeconfig.json
 C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\CircuitBreaker.Sample.dll
 C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\CircuitBreaker.Sample.pdb
-C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\Microsoft.Extensions.Caching.Abstractions.dll
-C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\Microsoft.Extensions.Caching.Memory.dll
 C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\Microsoft.Extensions.DependencyInjection.dll
 C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\Microsoft.Extensions.Logging.Abstractions.dll
-C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\Microsoft.Extensions.Options.dll
-C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\Microsoft.Extensions.Primitives.dll
 C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\Polly.dll
 C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\Polly.Core.dll
 C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Sample\bin\Debug\net10.0\CircuitBreaker.Core.dll

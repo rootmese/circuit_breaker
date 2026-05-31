@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using CircuitBreaker.Core;
+using Polly.CircuitBreaker;
 
 namespace CircuitBreaker.Sample
 {
@@ -21,7 +22,7 @@ namespace CircuitBreaker.Sample
             {
                 return await _breaker.ExecuteAsync(() => _realService.GetDataAsync());
             }
-            catch (CircuitBrokenException ex)
+            catch (BrokenCircuitException ex)
             {
                 Console.WriteLine($"[DECORATOR] Blocked by circuit breaker: {ex.Message}");
                 throw;

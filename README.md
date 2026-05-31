@@ -45,7 +45,6 @@ Esta biblioteca oferece:
 ---
 
 ## Arquitetura
-## Arquitetura
 
 ```text
 ┌─────────────────────────────────────────────────────────┐

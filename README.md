@@ -21,6 +21,7 @@
 - [Build, Run e Packaging](#build-run-e-packaging)
 - [Referência de Configuração](#referência-de-configuração)
 - [Decisões Técnicas](#decisões-técnicas)
+- [Nota Técnica — Evolução Futura](#nota-técnica--evolução-futura)
 - [Licença](#licença)
 
 ---
@@ -44,86 +45,82 @@ Esta biblioteca oferece:
 ---
 
 ## Arquitetura
-
-```
 ┌─────────────────────────────────────────────────────────┐
-│                    Sua Aplicação                        │
-│                                                         │
-│  IMyService ──► MyServiceDecorator ──► ICircuitBreaker  │
-│                                            │            │
-│                                    ┌───────┴───────┐    │
-│                                    │ CircuitBreaker │    │
-│                                    │   (wrapper)    │    │
-│                                    └───────┬───────┘    │
-│                                            │            │
-│                                  ┌─────────┴─────────┐  │
-│                                  │ ResiliencePipeline │  │
-│                                  │   (Polly v8)      │  │
-│                                  └───────────────────┘  │
+│ Sua Aplicação │
+│ │
+│ IMyService ──► MyServiceDecorator ──► ICircuitBreaker │
+│ │ │
+│ ┌───────┴───────┐ │
+│ │ CircuitBreaker │ │
+│ │ (wrapper) │ │
+│ └───────┬───────┘ │
+│ │ │
+│ ┌─────────┴─────────┐ │
+│ │ ResiliencePipeline │ │
+│ │ (Polly v8) │ │
+│ └───────────────────┘ │
 └─────────────────────────────────────────────────────────┘
-```
+
+text
 
 A classe `CircuitBreaker` é um **thin wrapper** sobre o `ResiliencePipeline` do Polly. Toda a lógica de estado (Closed → Open → Half-Open → Closed) é delegada ao engine do Polly, que resolve nativamente problemas de concorrência e race conditions.
 
 ---
 
 ## Estrutura do Projeto
-
-```
 circuit_breaker/
 ├── src/
-│   ├── CircuitBreaker.slnx              # Solution (.NET 10 slnx format)
-│   ├── CircuitBreaker.Core/             # 📦 Biblioteca (NuGet package)
-│   │   ├── CircuitBreaker.Core.csproj
-│   │   ├── ICircuitBreaker.cs           # Interface pública (com overloads de CancellationToken)
-│   │   ├── CircuitBreaker.cs            # Wrapper sobre ResiliencePipeline
-│   │   ├── CircuitBreakerOptions.cs     # Configuração da sliding window + callbacks
-│   │   ├── CircuitBreakerFactory.cs     # Factory com state tracking e callbacks
-│   │   └── CircuitState.cs              # Enum: Closed, Open, HalfOpen
-│   └── CircuitBreaker.Sample/           # 🎮 App console de demonstração
-│       ├── CircuitBreaker.Sample.csproj
-│       ├── Program.cs                   # Ponto de entrada com DI e state query
-│       ├── IMyService.cs                # Interface do serviço
-│       ├── RealService.cs               # Serviço que simula falhas
-│       ├── FallbackService.cs           # Serviço de fallback
-│       └── MyServiceDecorator.cs        # Decorator com circuit breaker
-├── dist/                                # Pacotes NuGet gerados
+│ ├── CircuitBreaker.slnx # Solution (.NET 10 slnx format)
+│ ├── CircuitBreaker.Core/ # 📦 Biblioteca (NuGet package)
+│ │ ├── CircuitBreaker.Core.csproj
+│ │ ├── ICircuitBreaker.cs # Interface pública (com overloads de CancellationToken)
+│ │ ├── CircuitBreaker.cs # Wrapper sobre ResiliencePipeline
+│ │ ├── CircuitBreakerOptions.cs # Configuração da sliding window + callbacks
+│ │ ├── CircuitBreakerFactory.cs # Factory com state tracking e callbacks
+│ │ └── CircuitState.cs # Enum: Closed, Open, HalfOpen
+│ └── CircuitBreaker.Sample/ # 🎮 App console de demonstração
+│ ├── CircuitBreaker.Sample.csproj
+│ ├── Program.cs # Ponto de entrada com DI e state query
+│ ├── IMyService.cs # Interface do serviço
+│ ├── RealService.cs # Serviço que simula falhas
+│ ├── FallbackService.cs # Serviço de fallback
+│ └── MyServiceDecorator.cs # Decorator com circuit breaker
+├── dist/ # Pacotes NuGet gerados
 ├── .gitignore
 └── README.md
-```
+
+text
 
 ---
 
 ## Como Funciona — Sliding Window
 
 Diferente de implementações simples que contam falhas absolutas (ex: "2 falhas = abre"), o **Advanced Circuit Breaker** do Polly usa uma **janela deslizante temporal**:
+Sampling Duration (10s)
+◄──────────────────────►
 
-```
-  Sampling Duration (10s)
-  ◄──────────────────────►
+✅ ✅ ✅ ❌ ❌ ✅ ❌ ❌ ❌ ✅
+│ │
+└── Taxa de falha = 50% ──┘
+(5 falhas / 10 total)
 
-  ✅ ✅ ✅ ❌ ❌ ✅ ❌ ❌ ❌ ✅
-  │                         │
-  └── Taxa de falha = 50% ──┘
-       (5 falhas / 10 total)
+Se FailureRatio ≥ 0.5 E total ≥ MinimumThroughput → ABRE
 
-  Se FailureRatio ≥ 0.5 E total ≥ MinimumThroughput → ABRE
-```
+text
 
 ### Transições de Estado
+┌──────────┐ taxa de falha ┌──────────┐ BreakDuration ┌──────────────┐
+│ CLOSED │ ≥ FailureRatio │ OPEN │ expira │ HALF-OPEN │
+│ ├─────────────────►│ ├──────────────────►│ │
+│ (normal) │ AND throughput │ (bloqueia│ │ (testa 1 req)│
+└──────────┘ ≥ minimum │ tudo) │ └──────┬───────┘
+▲ └──────────┘ │
+│ ▲ │
+│ requisição ok │ requisição falha │
+└─────────────────────────────┼────────────────────────────────┘
+└────────────────────────────────
 
-```
-   ┌──────────┐  taxa de falha   ┌──────────┐  BreakDuration   ┌──────────────┐
-   │  CLOSED  │ ≥ FailureRatio   │   OPEN   │   expira         │  HALF-OPEN   │
-   │          ├─────────────────►│          ├──────────────────►│              │
-   │ (normal) │  AND throughput  │ (bloqueia│                   │ (testa 1 req)│
-   └──────────┘  ≥ minimum      │  tudo)   │                   └──────┬───────┘
-        ▲                        └──────────┘                          │
-        │                             ▲                                │
-        │      requisição ok          │        requisição falha        │
-        └─────────────────────────────┼────────────────────────────────┘
-                                      └────────────────────────────────
-```
+text
 
 ### Proteções de Concorrência
 
@@ -146,13 +143,10 @@ public enum CircuitState
     Open,      // Todas as requisições são bloqueadas
     HalfOpen   // Uma requisição de teste é permitida
 }
-```
-
-### `ICircuitBreaker`
-
+ICircuitBreaker
 Interface pública com 4 métodos e consulta de estado:
 
-```csharp
+csharp
 public interface ICircuitBreaker
 {
     // Consulta de estado para health checks e dashboards
@@ -166,15 +160,12 @@ public interface ICircuitBreaker
     Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken ct = default);
     Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken ct = default);
 }
-```
+Quando o circuito está aberto, todos os métodos lançam Polly.CircuitBreaker.BrokenCircuitException.
 
-Quando o circuito está aberto, todos os métodos lançam `Polly.CircuitBreaker.BrokenCircuitException`.
-
-### `CircuitBreakerOptions`
-
+CircuitBreakerOptions
 Configuração da sliding window e callbacks de observabilidade:
 
-```csharp
+csharp
 public class CircuitBreakerOptions
 {
     // Configuração da Sliding Window
@@ -188,23 +179,18 @@ public class CircuitBreakerOptions
     public Action?           OnClosed     { get; set; }
     public Action?           OnHalfOpened { get; set; }
 }
-```
+Propriedade	Descrição	Default
+FailureRatio	Taxa de falha (0.0 a 1.0) necessária para abrir o circuito	0.5
+SamplingDuration	Duração da janela deslizante de amostragem	10s
+MinimumThroughput	Mínimo de chamadas na janela antes que o circuito possa ser ativado	8
+BreakDuration	Tempo que o circuito fica aberto antes de testar novamente (Half-Open)	5s
+OnOpened	Callback quando o circuito abre (recebe o BreakDuration)	null
+OnClosed	Callback quando o circuito fecha (sistema recuperado)	null
+OnHalfOpened	Callback quando o circuito entra em Half-Open (testando)	null
+CircuitBreakerFactory
+Factory estática que monta o ResiliencePipeline, conecta o state tracking interno e os callbacks do consumidor:
 
-| Propriedade         | Descrição                                                                 | Default  |
-|---------------------|---------------------------------------------------------------------------|----------|
-| `FailureRatio`      | Taxa de falha (0.0 a 1.0) necessária para abrir o circuito               | `0.5`    |
-| `SamplingDuration`  | Duração da janela deslizante de amostragem                                | `10s`    |
-| `MinimumThroughput` | Mínimo de chamadas na janela antes que o circuito possa ser ativado       | `8`      |
-| `BreakDuration`     | Tempo que o circuito fica aberto antes de testar novamente (Half-Open)    | `5s`     |
-| `OnOpened`          | Callback quando o circuito abre (recebe o `BreakDuration`)               | `null`   |
-| `OnClosed`          | Callback quando o circuito fecha (sistema recuperado)                     | `null`   |
-| `OnHalfOpened`      | Callback quando o circuito entra em Half-Open (testando)                  | `null`   |
-
-### `CircuitBreakerFactory`
-
-Factory estática que monta o `ResiliencePipeline`, conecta o state tracking interno e os callbacks do consumidor:
-
-```csharp
+csharp
 var breaker = CircuitBreakerFactory.Create(
     new CircuitBreakerOptions
     {
@@ -223,13 +209,10 @@ var breaker = CircuitBreakerFactory.Create(
     },
     resourceName: "PaymentAPI"
 );
-```
+CircuitBreaker
+Wrapper fino sobre ResiliencePipeline com state tracking via volatile int:
 
-### `CircuitBreaker`
-
-Wrapper fino sobre `ResiliencePipeline` com state tracking via `volatile int`:
-
-```csharp
+csharp
 public class CircuitBreaker : ICircuitBreaker
 {
     private readonly ResiliencePipeline _pipeline;
@@ -240,15 +223,9 @@ public class CircuitBreaker : ICircuitBreaker
     // State é atualizado automaticamente pela Factory via callbacks do Polly
     internal void UpdateState(CircuitState state) => _state = (int)state;
 }
-```
-
----
-
-## Uso Básico
-
-### Execução Simples
-
-```csharp
+Uso Básico
+Execução Simples
+csharp
 using CircuitBreaker.Core;
 
 var breaker = CircuitBreakerFactory.Create(
@@ -267,31 +244,21 @@ catch (Polly.CircuitBreaker.BrokenCircuitException)
 {
     Console.WriteLine("Circuito aberto! Usando fallback...");
 }
-```
+CancellationToken
+Os overloads com CancellationToken propagam o token do pipeline do Polly até a sua ação, garantindo cancelamento cooperativo:
 
----
-
-## CancellationToken
-
-Os overloads com `CancellationToken` propagam o token do pipeline do Polly até a sua ação, garantindo cancelamento cooperativo:
-
-```csharp
+csharp
 // O token é propagado pelo Polly e repassado à sua action
 var result = await breaker.ExecuteAsync(async (CancellationToken ct) =>
 {
     return await httpClient.GetStringAsync("https://api.exemplo.com/dados", ct);
 }, cancellationToken: cts.Token);
-```
+Sem o CancellationToken (overload simples), se o Polly cancelar a operação internamente, a sua action continua rodando em background. Com o token propagado, a action é cancelada junto.
 
-**Sem o CancellationToken** (overload simples), se o Polly cancelar a operação internamente, a sua action continua rodando em background. Com o token propagado, a action é cancelada junto.
+Observabilidade (Callbacks)
+A biblioteca não faz log por conta própria. Você define o que acontece em cada transição de estado via callbacks no CircuitBreakerOptions:
 
----
-
-## Observabilidade (Callbacks)
-
-A biblioteca **não faz log por conta própria**. Você define o que acontece em cada transição de estado via callbacks no `CircuitBreakerOptions`:
-
-```csharp
+csharp
 var options = new CircuitBreakerOptions
 {
     OnOpened = breakDuration =>
@@ -309,17 +276,12 @@ var options = new CircuitBreakerOptions
         logger.LogInformation("🔍 Circuit em teste (Half-Open)");
     }
 };
-```
-
 Se você não definir callbacks, nada acontece (sem side effects).
 
----
+Consulta de Estado
+A propriedade State permite consultar o estado atual para health checks, dashboards ou lógica condicional:
 
-## Consulta de Estado
-
-A propriedade `State` permite consultar o estado atual para health checks, dashboards ou lógica condicional:
-
-```csharp
+csharp
 var breaker = serviceProvider.GetRequiredService<ICircuitBreaker>();
 
 // Health check endpoint
@@ -336,13 +298,8 @@ if (breaker.State == CircuitState.Open)
 {
     return await fallbackService.GetDataAsync();
 }
-```
-
----
-
-## Integração com Dependency Injection
-
-```csharp
+Integração com Dependency Injection
+csharp
 using CircuitBreaker.Core;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -374,15 +331,10 @@ services.AddTransient<IMyService>(provider =>
     var real = provider.GetRequiredService<RealService>();
     return new MyServiceDecorator(real, breaker);
 });
-```
+Padrão Decorator
+O MyServiceDecorator envolve qualquer IMyService com proteção do circuit breaker:
 
----
-
-## Padrão Decorator
-
-O `MyServiceDecorator` envolve qualquer `IMyService` com proteção do circuit breaker:
-
-```csharp
+csharp
 public class MyServiceDecorator : IMyService
 {
     private readonly IMyService _realService;
@@ -407,21 +359,18 @@ public class MyServiceDecorator : IMyService
         }
     }
 }
-```
+Aplicação de Exemplo
+O projeto CircuitBreaker.Sample demonstra o fluxo completo com state tracking visível:
 
----
+RealService — simula um serviço instável que falha nas 2 primeiras chamadas
 
-## Aplicação de Exemplo
+FallbackService — retorna dados em cache como modo de degradação
 
-O projeto `CircuitBreaker.Sample` demonstra o fluxo completo com state tracking visível:
+MyServiceDecorator — aplica o circuit breaker sobre o serviço real
 
-1. **`RealService`** — simula um serviço instável que falha nas 2 primeiras chamadas
-2. **`FallbackService`** — retorna dados em cache como modo de degradação
-3. **`MyServiceDecorator`** — aplica o circuit breaker sobre o serviço real
+O Program.cs executa 8 chamadas sequenciais exibindo o estado do circuito em cada passo:
 
-O `Program.cs` executa 8 chamadas sequenciais exibindo o estado do circuito em cada passo:
-
-```
+text
 Call #1  │ State: Closed   → Falha (attempt 1)        → Fallback
 Call #2  │ State: Closed   → Falha (attempt 2)        → ⚡ Circuit OPENS → Fallback
 Call #3  │ State: Open     → BrokenCircuitException   → Fallback
@@ -432,99 +381,139 @@ Call #6  │ State: Open     → BrokenCircuitException   → Fallback
 Call #7  │ State: Open     → 🔍 Half-Open → attempt 3 → ✅ Sucesso → Circuit CLOSES
 Call #8  │ State: Closed   → attempt 4 → Sucesso normal
 Final    │ State: Closed ✅
-```
+Build, Run e Packaging
+Pré-requisitos
+.NET 10.0 SDK ou superior
 
----
-
-## Build, Run e Packaging
-
-### Pré-requisitos
-
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/) ou superior
-
-### Build
-
-```bash
+Build
+bash
 dotnet build src/CircuitBreaker.slnx
-```
-
-### Executar Demo
-
-```bash
+Executar Demo
+bash
 dotnet run --project src/CircuitBreaker.Sample/CircuitBreaker.Sample.csproj
-```
-
-### Gerar Pacote NuGet
-
-```bash
+Gerar Pacote NuGet
+bash
 dotnet pack src/CircuitBreaker.Core/CircuitBreaker.Core.csproj -c Release -o ./dist
-```
+O pacote .nupkg será gerado na pasta dist/.
 
-O pacote `.nupkg` será gerado na pasta `dist/`.
+Referência de Configuração
+Cenários Comuns
+Cenário	FailureRatio	SamplingDuration	MinimumThroughput	BreakDuration
+Produção (conservador)	0.25	30s	20	30s
+Produção (agressivo)	0.5	10s	8	5s
+Testes / Demo	0.5	10s	2	5s
+Serviço crítico	0.1	60s	50	60s
+Dicas
+MinimumThroughput baixo = reage mais rápido, mas pode ter falsos positivos
 
----
+SamplingDuration curto = mais sensível a picos momentâneos
 
-## Referência de Configuração
+BreakDuration longo = mais tempo para o serviço se recuperar, mas maior latência de retorno
 
-### Cenários Comuns
+Callbacks null = nenhum side effect — a lib é silenciosa por padrão
 
-| Cenário                     | FailureRatio | SamplingDuration | MinimumThroughput | BreakDuration |
-|-----------------------------|:------------:|:----------------:|:-----------------:|:-------------:|
-| **Produção (conservador)**  | `0.25`       | `30s`            | `20`              | `30s`         |
-| **Produção (agressivo)**    | `0.5`        | `10s`            | `8`               | `5s`          |
-| **Testes / Demo**           | `0.5`        | `10s`            | `2`               | `5s`          |
-| **Serviço crítico**         | `0.1`        | `60s`            | `50`              | `60s`         |
+Decisões Técnicas
+Por que Polly v8 e não implementação custom?
+Aspecto	Custom	Polly v8
+Race conditions	Requer lock / Interlocked	Resolvido internamente
+Half-Open com 2+ threads	Bug clássico e difícil de reproduzir	Apenas 1 requisição teste permitida
+Sliding window	Implementação complexa	Nativo (AdvancedCircuitBreaker)
+Testabilidade	Mock manual	ResiliencePipeline injetável
+Manutenção	Código próprio	Mantido pela comunidade OSS
+Por que um wrapper e não usar Polly direto?
+Abstração — consumidores da biblioteca não precisam conhecer Polly
 
-### Dicas
+Configuração centralizada — CircuitBreakerOptions simplifica o setup com callbacks integrados
 
-- **`MinimumThroughput` baixo** = reage mais rápido, mas pode ter falsos positivos
-- **`SamplingDuration` curto** = mais sensível a picos momentâneos
-- **`BreakDuration` longo** = mais tempo para o serviço se recuperar, mas maior latência de retorno
-- **Callbacks `null`** = nenhum side effect — a lib é silenciosa por padrão
+Observabilidade opt-in — a lib não faz log sozinha; o consumidor define o que acontece
 
----
+State tracking — propriedade State para health checks sem expor internals do Polly
 
-## Decisões Técnicas
+CancellationToken — overloads que propagam corretamente o token até a ação final
 
-### Por que Polly v8 e não implementação custom?
+Substituibilidade — a interface ICircuitBreaker permite trocar a implementação sem afetar consumidores
 
-| Aspecto                   | Custom                                | Polly v8                                |
-|---------------------------|---------------------------------------|-----------------------------------------|
-| Race conditions           | Requer `lock` / `Interlocked`         | Resolvido internamente                  |
-| Half-Open com 2+ threads  | Bug clássico e difícil de reproduzir  | Apenas 1 requisição teste permitida     |
-| Sliding window            | Implementação complexa                | Nativo (`AdvancedCircuitBreaker`)        |
-| Testabilidade             | Mock manual                           | `ResiliencePipeline` injetável          |
-| Manutenção                | Código próprio                        | Mantido pela comunidade OSS             |
+Por que volatile int para o estado?
+O estado é rastreado via volatile int (castado para CircuitState enum) por ser:
 
-### Por que um wrapper e não usar Polly direto?
+Lock-free — leituras atômicas sem custo de sincronização
 
-- **Abstração** — consumidores da biblioteca não precisam conhecer Polly
-- **Configuração centralizada** — `CircuitBreakerOptions` simplifica o setup com callbacks integrados
-- **Observabilidade opt-in** — a lib não faz log sozinha; o consumidor define o que acontece
-- **State tracking** — propriedade `State` para health checks sem expor internals do Polly
-- **CancellationToken** — overloads que propagam corretamente o token até a ação final
-- **Substituibilidade** — a interface `ICircuitBreaker` permite trocar a implementação sem afetar consumidores
+Thread-safe — volatile garante visibilidade entre threads
 
-### Por que `volatile int` para o estado?
+Consistente — atualizado pelos callbacks do Polly que são invocados de forma serializada
 
-O estado é rastreado via `volatile int` (castado para `CircuitState` enum) por ser:
-- **Lock-free** — leituras atômicas sem custo de sincronização
-- **Thread-safe** — `volatile` garante visibilidade entre threads
-- **Consistente** — atualizado pelos callbacks do Polly que são invocados de forma serializada
+Nota Técnica — Evolução Futura
+De Circuit Breaker para Adaptive Traffic Control
+O objetivo desta biblioteca é fornecer uma implementação simples e confiável do padrão Circuit Breaker, atuando como mecanismo de proteção contra falhas em cascata.
 
----
+Em termos de analogia com sistemas de controle, o Circuit Breaker pode ser visto como uma proteção de emergência ("hard cut"), interrompendo completamente o fluxo de chamadas quando a degradação ultrapassa limites aceitáveis.
 
-## Dependências
+Conceito de Evolução
+Uma possível evolução futura consiste em adicionar uma camada superior de controle adaptativo de tráfego, inspirada em sistemas de feedback contínuo utilizados em redes, telecomunicações e controle automotivo.
 
-| Pacote                                      | Versão   | Projeto         |
-|---------------------------------------------|----------|-----------------|
-| `Polly`                                     | `8.6.6`  | Core            |
-| `Microsoft.Extensions.DependencyInjection`  | `10.0.8` | Sample          |
+Em vez de operar apenas com estados discretos:
 
-> **Nota:** O Sample recebe `Polly` como dependência transitiva do Core — não é necessário referenciá-lo diretamente.
+text
+Closed → Open → Half-Open
+o sistema poderia monitorar continuamente indicadores como:
 
----
+Error Rate
 
-## Licença
+Throughput
 
+Latência média
+
+P95 / P99
+
+Taxa de timeouts
+
+Saturação de recursos
+
+e calcular um indicador contínuo de saúde do serviço:
+
+text
+Health Score = 0.0 .. 1.0
+Score	Estado
+1.0	Saudável
+0.8	Leve degradação
+0.5	Degradação moderada
+0.2	Estado crítico
+0.0	Falha severa
+Possíveis Ações
+Com base nesse score, mecanismos adicionais poderiam ser aplicados:
+
+Health Score	Ação
+0.8	Redução leve de throughput
+0.5	Limitação de concorrência
+0.2	Rejeição seletiva de requisições
+0.0	Abertura do Circuit Breaker
+Arquitetura Conceitual
+text
+Telemetry
+     │
+     ▼
+Health Score Calculator
+     │
+     ▼
+Adaptive Traffic Controller
+     │
+     ├── Rate Limiting
+     ├── Concurrency Control
+     ├── Request Shedding
+     │
+     ▼
+Circuit Breaker
+(Ultimate Protection Layer)
+Escopo Atual
+Esta funcionalidade não faz parte da versão atual da biblioteca.
+
+O foco do projeto permanece sendo uma abstração simples e reutilizável sobre o Advanced Circuit Breaker do Polly v8, mantendo baixo acoplamento, previsibilidade operacional e facilidade de adoção.
+
+Dependências
+Pacote	Versão	Projeto
+Polly	8.6.6	Core
+Microsoft.Extensions.DependencyInjection	10.0.8	Sample
+Nota: O Sample recebe Polly como dependência transitiva do Core — não é necessário referenciá-lo diretamente.
+
+Licença
 Este projeto é distribuído para fins educacionais e de demonstração.

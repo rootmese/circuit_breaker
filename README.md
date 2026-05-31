@@ -45,51 +45,55 @@ Esta biblioteca oferece:
 ---
 
 ## Arquitetura
-┌─────────────────────────────────────────────────────────┐
-│ Sua Aplicação │
-│ │
-│ IMyService ──► MyServiceDecorator ──► ICircuitBreaker │
-│ │ │
-│ ┌───────┴───────┐ │
-│ │ CircuitBreaker │ │
-│ │ (wrapper) │ │
-│ └───────┬───────┘ │
-│ │ │
-│ ┌─────────┴─────────┐ │
-│ │ ResiliencePipeline │ │
-│ │ (Polly v8) │ │
-│ └───────────────────┘ │
-└─────────────────────────────────────────────────────────┘
+## Arquitetura
 
-text
+```text
+┌─────────────────────────────────────────────────────────┐
+│                    Sua Aplicação                        │
+│                                                         │
+│  IMyService ──► MyServiceDecorator ──► ICircuitBreaker  │
+│                                            │            │
+│                                    ┌───────┴───────┐    │
+│                                    │ CircuitBreaker │    │
+│                                    │   (wrapper)    │    │
+│                                    └───────┬───────┘    │
+│                                            │            │
+│                                  ┌─────────┴─────────┐  │
+│                                  │ ResiliencePipeline │  │
+│                                  │   (Polly v8)      │  │
+│                                  └───────────────────┘  │
+└─────────────────────────────────────────────────────────┘
+```
 
 A classe `CircuitBreaker` é um **thin wrapper** sobre o `ResiliencePipeline` do Polly. Toda a lógica de estado (Closed → Open → Half-Open → Closed) é delegada ao engine do Polly, que resolve nativamente problemas de concorrência e race conditions.
 
 ---
 
 ## Estrutura do Projeto
+## Estrutura do Projeto
+
+```text
 circuit_breaker/
 ├── src/
-│ ├── CircuitBreaker.slnx # Solution (.NET 10 slnx format)
-│ ├── CircuitBreaker.Core/ # 📦 Biblioteca (NuGet package)
-│ │ ├── CircuitBreaker.Core.csproj
-│ │ ├── ICircuitBreaker.cs # Interface pública (com overloads de CancellationToken)
-│ │ ├── CircuitBreaker.cs # Wrapper sobre ResiliencePipeline
-│ │ ├── CircuitBreakerOptions.cs # Configuração da sliding window + callbacks
-│ │ ├── CircuitBreakerFactory.cs # Factory com state tracking e callbacks
-│ │ └── CircuitState.cs # Enum: Closed, Open, HalfOpen
-│ └── CircuitBreaker.Sample/ # 🎮 App console de demonstração
-│ ├── CircuitBreaker.Sample.csproj
-│ ├── Program.cs # Ponto de entrada com DI e state query
-│ ├── IMyService.cs # Interface do serviço
-│ ├── RealService.cs # Serviço que simula falhas
-│ ├── FallbackService.cs # Serviço de fallback
-│ └── MyServiceDecorator.cs # Decorator com circuit breaker
-├── dist/ # Pacotes NuGet gerados
+│   ├── CircuitBreaker.slnx
+│   ├── CircuitBreaker.Core/
+│   │   ├── CircuitBreaker.Core.csproj
+│   │   ├── ICircuitBreaker.cs
+│   │   ├── CircuitBreaker.cs
+│   │   ├── CircuitBreakerOptions.cs
+│   │   ├── CircuitBreakerFactory.cs
+│   │   └── CircuitState.cs
+│   └── CircuitBreaker.Sample/
+│       ├── CircuitBreaker.Sample.csproj
+│       ├── Program.cs
+│       ├── IMyService.cs
+│       ├── RealService.cs
+│       ├── FallbackService.cs
+│       └── MyServiceDecorator.cs
+├── dist/
 ├── .gitignore
 └── README.md
-
-text
+```
 
 ---
 
@@ -109,18 +113,21 @@ Se FailureRatio ≥ 0.5 E total ≥ MinimumThroughput → ABRE
 text
 
 ### Transições de Estado
-┌──────────┐ taxa de falha ┌──────────┐ BreakDuration ┌──────────────┐
-│ CLOSED │ ≥ FailureRatio │ OPEN │ expira │ HALF-OPEN │
-│ ├─────────────────►│ ├──────────────────►│ │
-│ (normal) │ AND throughput │ (bloqueia│ │ (testa 1 req)│
-└──────────┘ ≥ minimum │ tudo) │ └──────┬───────┘
-▲ └──────────┘ │
-│ ▲ │
-│ requisição ok │ requisição falha │
-└─────────────────────────────┼────────────────────────────────┘
-└────────────────────────────────
-
-text
+   ┌──────────┐                      ┌──────────┐
+   │  CLOSED  │─────────────────────►│   OPEN   │
+   └────┬─────┘  FailureRatio atingido└────┬─────┘
+        ▲                                 │
+        │                                 │ BreakDuration expira
+        │                                 ▼
+        │                          ┌──────────────┐
+        │                          │  HALF-OPEN   │
+        │                          └──────┬───────┘
+        │                                 │
+        │       sucesso                   │ falha
+        └─────────────────────────────────┘
+                      ▲
+                      │
+                   CLOSED
 
 ### Proteções de Concorrência
 

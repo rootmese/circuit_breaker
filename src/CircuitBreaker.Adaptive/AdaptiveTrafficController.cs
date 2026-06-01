@@ -16,6 +16,8 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
     private readonly ICircuitBreaker? _circuitBreaker;
     private readonly ILogger _logger;
     private readonly TimeSpan _controlLoopInterval;
+    private readonly double _scoreSmoothingFactor;
+    private readonly double _scoreChangeThreshold;
     private readonly double _suddenDegradationDelta;
     private readonly HealthScore _emergencyScore;
     private readonly CancellationTokenSource _cts = new();
@@ -39,6 +41,8 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
 
         var opts = options ?? new AdaptiveTrafficControlOptions();
         _controlLoopInterval = opts.ControlLoopInterval;
+        _scoreSmoothingFactor = Math.Clamp(opts.ScoreSmoothingFactor, 0.0, 1.0);
+        _scoreChangeThreshold = Math.Max(0.0, opts.ScoreChangeThreshold);
         _suddenDegradationDelta = opts.SuddenDegradationDelta;
         _emergencyScore = opts.EmergencyHealthScore;
     }
@@ -86,22 +90,29 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
             {
                 var snapshot = await _telemetry.CollectAsync(_cts.Token).ConfigureAwait(false);
                 var newScore = _healthCalculator.Calculate(snapshot);
+                var smoothedScore = SmoothScore(_currentScore, newScore);
 
-                if (newScore.Value < _currentScore.Value - _suddenDegradationDelta)
+                if (Math.Abs(smoothedScore.Value - _currentScore.Value) < _scoreChangeThreshold)
+                {
+                    await Task.Delay(_controlLoopInterval, _cts.Token).ConfigureAwait(false);
+                    continue;
+                }
+
+                if (smoothedScore.Value < _currentScore.Value - _suddenDegradationDelta)
                 {
                     _logger.LogWarning(
                         "Sudden degradation: {Old:F2} → {New:F2}",
-                        _currentScore.Value, newScore.Value);
+                        _currentScore.Value, smoothedScore.Value);
                     await ApplyEmergencyMeasuresAsync(_cts.Token).ConfigureAwait(false);
                 }
 
-                LogHealthTransitions(newScore);
+                LogHealthTransitions(smoothedScore);
 
                 foreach (var actuator in _actuators)
                 {
                     try
                     {
-                        await actuator.ApplyControlAsync(newScore, _cts.Token).ConfigureAwait(false);
+                        await actuator.ApplyControlAsync(smoothedScore, _cts.Token).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -109,7 +120,7 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
                     }
                 }
 
-                _currentScore = newScore;
+                _currentScore = smoothedScore;
                 await Task.Delay(_controlLoopInterval, _cts.Token).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (_cts.Token.IsCancellationRequested)
@@ -145,6 +156,17 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
         {
             _logger.LogInformation("Service recovered (score {Score:F2})", newScore.Value);
         }
+    }
+
+    private HealthScore SmoothScore(HealthScore current, HealthScore next)
+    {
+        var delta = next.Value - current.Value;
+        if (Math.Abs(delta) < _scoreChangeThreshold)
+        {
+            return current;
+        }
+
+        return new HealthScore(current.Value + delta * _scoreSmoothingFactor);
     }
 
     private async Task ApplyEmergencyMeasuresAsync(CancellationToken cancellationToken)

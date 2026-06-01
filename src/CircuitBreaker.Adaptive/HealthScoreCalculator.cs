@@ -72,14 +72,48 @@ public sealed class HealthScoreCalculator
         if (lowerIsBetter)
         {
             if (value <= thresholds.Healthy) return 1.0;
-            if (value <= thresholds.Warning) return 0.8;
-            if (value <= thresholds.Critical) return 0.5;
-            return 0.2;
+            if (value <= thresholds.Warning)
+            {
+                return Math.Clamp(
+                    1.0 - (value - thresholds.Healthy) / (thresholds.Warning - thresholds.Healthy) * 0.2,
+                    0.0,
+                    1.0);
+            }
+
+            if (value <= thresholds.Critical)
+            {
+                return Math.Clamp(
+                    0.8 - (value - thresholds.Warning) / (thresholds.Critical - thresholds.Warning) * 0.3,
+                    0.0,
+                    1.0);
+            }
+
+            return Math.Clamp(
+                0.2 - (value - thresholds.Critical) / Math.Max(thresholds.Critical, 1.0) * 0.2,
+                0.0,
+                1.0);
         }
 
         if (value >= thresholds.Healthy) return 1.0;
-        if (value >= thresholds.Warning) return 0.8;
-        if (value >= thresholds.Critical) return 0.5;
-        return 0.2;
+        if (value >= thresholds.Warning)
+        {
+            return Math.Clamp(
+                1.0 - (thresholds.Healthy - value) / Math.Max(thresholds.Healthy - thresholds.Warning, 1.0) * 0.2,
+                0.0,
+                1.0);
+        }
+
+        if (value >= thresholds.Critical)
+        {
+            return Math.Clamp(
+                0.8 - (thresholds.Warning - value) / Math.Max(thresholds.Warning - thresholds.Critical, 1.0) * 0.3,
+                0.0,
+                1.0);
+        }
+
+        return Math.Clamp(
+            0.2 - (thresholds.Critical - value) / Math.Max(Math.Abs(thresholds.Critical), 1.0) * 0.2,
+            0.0,
+            1.0);
     }
 }

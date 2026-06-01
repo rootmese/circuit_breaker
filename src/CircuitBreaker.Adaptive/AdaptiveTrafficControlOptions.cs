@@ -7,6 +7,8 @@ public sealed class AdaptiveTrafficControlOptions
 {
     public TimeSpan TelemetryWindow { get; set; } = TimeSpan.FromSeconds(30);
     public TimeSpan ControlLoopInterval { get; set; } = TimeSpan.FromMilliseconds(100);
+    public double ScoreSmoothingFactor { get; set; } = 0.5;
+    public double ScoreChangeThreshold { get; set; } = 0.05;
     public double SuddenDegradationDelta { get; set; } = 0.3;
     public int InitialMaxRequestsPerSecond { get; set; } = 1000;
     public int InitialMaxConcurrency { get; set; } = 100;

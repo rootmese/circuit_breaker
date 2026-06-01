@@ -1,5 +1,5 @@
 ===============================================================================
-CIRCUITBREAKER.CORE
+CIRCUITBREAKER
 ===============================================================================
 
 Biblioteca .NET 10 que encapsula o Advanced Circuit Breaker do Polly v8 em uma
@@ -9,16 +9,24 @@ API simples, thread-safe e pronta para distribuição via NuGet.
 VISÃO GERAL
 -------------------------------------------------------------------------------
 
-Circuit Breaker é um padrão de resiliência utilizado para evitar falhas em
-cascata quando um serviço externo começa a apresentar erros.
+Este repositório oferece:
 
-Quando a taxa de falha ultrapassa um limite configurado, o circuito é aberto,
-bloqueando novas chamadas durante um período determinado. Após esse período,
-uma requisição de teste é permitida para verificar se o serviço se recuperou.
+  * `CircuitBreaker.Core` — wrapper do Circuit Breaker do Polly com API
+    simplificada e integração com Dependency Injection.
+  * `CircuitBreaker.Telemetry` — provedor de métricas de janela deslizante.
+  * `CircuitBreaker.Adaptive` — controle adaptativo de tráfego, concorrência e
+    rate limiting.
+  * `CircuitBreaker.Sample` — exemplo de uso do core.
+  * `CircuitBreaker.Adaptive.Sample` — exemplo de uso adaptativo.
+
+O padrão Circuit Breaker ajuda a evitar falhas em cascata quando um serviço
+externo começa a apresentar erro. Quando a taxa de falha ultrapassa um limite
+configurado, o circuito abre e bloqueia novas chamadas até que o serviço
+tenha tempo para se recuperar.
 
 Principais características:
 
-  * Sliding Window (janela deslizante)
+  * Sliding Window baseada em tempo
   * Thread-safe
   * Proteção contra race conditions
   * CancellationToken nativo
@@ -28,6 +36,26 @@ Principais características:
   * API simplificada
   * Factory Pattern
   * Pronto para empacotamento NuGet
+
+-------------------------------------------------------------------------------
+COMO USAR
+-------------------------------------------------------------------------------
+
+1. Restaurar pacotes:
+
+       dotnet restore
+
+2. Compilar:
+
+       dotnet build
+
+3. Executar o sample do core:
+
+       dotnet run --project src/CircuitBreaker.Sample
+
+4. Executar o sample adaptativo:
+
+       dotnet run --project src/CircuitBreaker.Adaptive.Sample
 
 -------------------------------------------------------------------------------
 ARQUITETURA
@@ -57,42 +85,43 @@ ARQUITETURA
     ResiliencePipeline
        (Polly v8)
 
-O CircuitBreaker atua como um wrapper fino sobre o ResiliencePipeline do Polly.
-
-Toda a máquina de estados é delegada ao Polly:
+O `CircuitBreaker` atua como um wrapper fino sobre o `ResiliencePipeline` do
+Polly. A máquina de estados é delegada ao Polly:
 
     CLOSED -> OPEN -> HALF-OPEN -> CLOSED
 
 -------------------------------------------------------------------------------
-ESTRUTURA DO PROJETO
+ESTRUTURA DO REPOSITÓRIO
 -------------------------------------------------------------------------------
 
-circuit_breaker/
+src/
+  CircuitBreaker.Core/
+  CircuitBreaker.Telemetry/
+  CircuitBreaker.Adaptive/
+  CircuitBreaker.Sample/
+  CircuitBreaker.Adaptive.Sample/
 
-    src/
-        CircuitBreaker.Core/
-            ICircuitBreaker.cs
-            CircuitBreaker.cs
-            CircuitBreakerFactory.cs
-            CircuitBreakerOptions.cs
-            CircuitState.cs
+dist/        (possível saída de build ou pacote)
+README.md
+README.txt
 
-        CircuitBreaker.Sample/
-            Program.cs
-            IMyService.cs
-            RealService.cs
-            FallbackService.cs
-            MyServiceDecorator.cs
+-------------------------------------------------------------------------------
+PROJECTOS NA SOLUTION
+-------------------------------------------------------------------------------
 
-    dist/
-    README.md
-    README.txt
+CircuitBreaker.slnx inclui:
+
+  * CircuitBreaker.Core
+  * CircuitBreaker.Telemetry
+  * CircuitBreaker.Adaptive
+  * CircuitBreaker.Sample
+  * CircuitBreaker.Adaptive.Sample
 
 -------------------------------------------------------------------------------
 SLIDING WINDOW
 -------------------------------------------------------------------------------
 
-O Polly utiliza uma janela deslizante baseada em tempo.
+O Polly utiliza uma janela temporal para calcular a taxa de falhas.
 
 Exemplo:
 
@@ -114,15 +143,11 @@ Exemplo:
 
     FailureRatio = 50%
 
-Se:
+O circuito abre quando:
 
     FailureRatio >= valor configurado
-
-e
-
+    AND
     Total >= MinimumThroughput
-
-então o circuito é aberto.
 
 -------------------------------------------------------------------------------
 ESTADOS
@@ -178,7 +203,7 @@ Solução:
     Máquina de estados atômica.
 
 -------------------------------------------------------------------------------
-COMPONENTES
+COMPONENTES PRINCIPAIS
 -------------------------------------------------------------------------------
 
 CircuitState
@@ -197,6 +222,19 @@ ICircuitBreaker
 Propriedade:
 
     State
+
+-------------------------------------------------------------------------------
+DEPENDÊNCIAS PRINCIPAIS
+-------------------------------------------------------------------------------
+
+  * Polly 8.6.6
+  * Microsoft.Extensions.DependencyInjection 10.0.8
+
+-------------------------------------------------------------------------------
+LICENÇA
+-------------------------------------------------------------------------------
+
+Projeto distribuído para fins educacionais e de demonstração.
 
 -------------------------------------------------------------------------------
 CONFIGURAÇÃO

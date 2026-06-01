@@ -1,50 +1,50 @@
 # CircuitBreaker
 
-> Biblioteca .NET 10 que encapsula o **Advanced Circuit Breaker** do **Polly v8** em uma API simples, consistente e pronta para distribuição via NuGet.
+> .NET 10 library that wraps Polly v8's **Advanced Circuit Breaker** in a simple, consistent API ready for NuGet distribution.
 
 ---
 
-## Visão Geral
+## Overview
 
-Este repositório contém uma camada de abstração sobre o Circuit Breaker do Polly, com foco em:
+This repository contains an abstraction layer over Polly's Circuit Breaker, focusing on:
 
-- API simplificada
-- integração com `CancellationToken`
-- métricas de telemetria
-- controle adaptativo de tráfego
-- compatibilidade com `Dependency Injection`
+- simplified API
+- integration with `CancellationToken`
+- telemetry metrics
+- adaptive traffic control
+- Dependency Injection compatibility
 
-### Projetos incluídos
+### Included projects
 
-- `CircuitBreaker.Core` — wrapper do Polly com Circuit Breaker e factory
-- `CircuitBreaker.Telemetry` — provedor de métricas e janela deslizante
-- `CircuitBreaker.Adaptive` — controle adaptativo de tráfego, rate limiting e concorrência
-- `CircuitBreaker.Sample` — exemplo de uso do core
-- `CircuitBreaker.Adaptive.Sample` — exemplo de uso adaptativo
+- `CircuitBreaker.Core` — Polly wrapper with Circuit Breaker and factory
+- `CircuitBreaker.Telemetry` — metrics provider and sliding window
+- `CircuitBreaker.Adaptive` — adaptive traffic control, rate limiting, and concurrency
+- `CircuitBreaker.Sample` — core usage sample
+- `CircuitBreaker.Adaptive.Sample` — adaptive usage sample
 
 ---
 
-## Como usar
+## How to use
 
-1. Restaurar pacotes:
+1. Restore packages:
 
 ```bash
 dotnet restore
 ```
 
-2. Compilar todos os projetos:
+2. Build all projects:
 
 ```bash
 dotnet build
 ```
 
-3. Executar o sample do core:
+3. Run the core sample:
 
 ```bash
 dotnet run --project src/CircuitBreaker.Sample
 ```
 
-4. Executar o sample adaptativo:
+4. Run the adaptive sample:
 
 ```bash
 dotnet run --project src/CircuitBreaker.Adaptive.Sample
@@ -52,10 +52,10 @@ dotnet run --project src/CircuitBreaker.Adaptive.Sample
 
 ---
 
-## Arquitetura
+## Architecture
 
 ```text
-Sua Aplicação
+Your Application
       |
       v
 
@@ -80,54 +80,54 @@ ResiliencePipeline
    (Polly v8)
 ```
 
-O `CircuitBreaker` atua como um wrapper fino sobre o `ResiliencePipeline` do Polly.
+The `CircuitBreaker` acts as a thin wrapper over Polly's `ResiliencePipeline`.
 
 ---
 
-## Máquina de Estados
+## State Machine
 
 ```text
 CLOSED
    |
-   | taxa de falha excedida
+   | failure rate exceeded
    v
 OPEN
    |
-   | BreakDuration expirado
+   | BreakDuration expired
    v
 HALF-OPEN
    |
-   +-- sucesso --> CLOSED
+   +-- success --> CLOSED
    |
-   +-- falha ----> OPEN
+   +-- failure ----> OPEN
 ```
 
-### Estados
+### States
 
-- `CLOSED` — operação normal
-- `OPEN` — chamadas bloqueadas
-- `HALF-OPEN` — chamada de teste permitida
+- `CLOSED` — normal operation
+- `OPEN` — calls blocked
+- `HALF-OPEN` — a test call is allowed
 
 ---
 
 ## Sliding Window
 
-O Polly utiliza uma janela temporal para calcular a taxa de falhas.
+Polly uses a time window to calculate the failure rate.
 
 ```text
-Sampling Duration = 10 segundos
+Sampling Duration = 10 seconds
 
-SUCESSO SUCESSO SUCESSO FALHA FALHA SUCESSO FALHA FALHA FALHA SUCESSO
+SUCCESS SUCCESS SUCCESS FAILURE FAILURE SUCCESS FAILURE FAILURE FAILURE SUCCESS
 
-Total:   10 chamadas
-Falhas:   5
+Total:   10 calls
+Failures:   5
 FailureRatio = 50%
 ```
 
-O circuito abre quando:
+The circuit opens when:
 
 ```text
-FailureRatio >= configurado
+FailureRatio >= configured value
 AND
 Throughput >= MinimumThroughput
 ```
@@ -136,8 +136,8 @@ Throughput >= MinimumThroughput
 
 ## Adaptive Traffic Control
 
-A camada adaptativa (`CircuitBreaker.Adaptive`) atua antes do Circuit Breaker,
-oferecendo controle de tráfego e proteção adicional.
+The adaptive layer (`CircuitBreaker.Adaptive`) operates before the Circuit Breaker,
+providing traffic control and additional protection.
 
 ```text
 Telemetry
@@ -154,54 +154,54 @@ Adaptive Traffic Controller
 Circuit Breaker
 ```
 
-### Conceito
+### Concept
 
-Em vez de depender apenas dos estados discretos:
+Instead of relying only on discrete states:
 
 ```text
 Closed → Open → Half-Open
 ```
 
-pode-se calcular continuamente um indicador de saúde:
+you can continuously calculate a health indicator:
 
 ```text
 Health Score = 0.0 .. 1.0
 ```
 
-| Score | Estado |
+| Score | State |
 |------:|--------|
-| 1.0   | Saudável |
-| 0.8   | Leve degradação |
-| 0.5   | Degradação moderada |
-| 0.2   | Estado crítico |
-| 0.0   | Falha severa |
+| 1.0   | Healthy |
+| 0.8   | Mild degradation |
+| 0.5   | Moderate degradation |
+| 0.2   | Critical state |
+| 0.0   | Severe failure |
 
 ---
 
-## Estrutura do repositório
+## Repository structure
 
 - `src/CircuitBreaker.Core`
 - `src/CircuitBreaker.Telemetry`
 - `src/CircuitBreaker.Adaptive`
 - `src/CircuitBreaker.Sample`
 - `src/CircuitBreaker.Adaptive.Sample`
-- `dist/` (possível saída de build ou pacote)
+- `dist/` (possible build or package output)
 
 ---
 
-## Dependências principais
+## Main dependencies
 
 - `Polly` 8.6.6
 - `Microsoft.Extensions.DependencyInjection` 10.0.8
 
 ---
 
-## Licença
+## License
 
-Projeto distribuído para fins educacionais e de demonstração.
+Project distributed for educational and demonstration purposes.
 
 ---
 
-## Referência
+## Reference
 
-Veja também `README.txt` para uma visão complementar e exemplos adicionais.
+See also `README.txt` for a complementary overview and additional examples.

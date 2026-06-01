@@ -2,66 +2,65 @@
 CIRCUITBREAKER
 ===============================================================================
 
-Biblioteca .NET 10 que encapsula o Advanced Circuit Breaker do Polly v8 em uma
-API simples, thread-safe e pronta para distribuição via NuGet.
+.NET 10 library that wraps Polly v8's Advanced Circuit Breaker in a simple,
+thread-safe API ready for NuGet distribution.
 
 -------------------------------------------------------------------------------
-VISÃO GERAL
+OVERVIEW
 -------------------------------------------------------------------------------
 
-Este repositório oferece:
+This repository provides:
 
-  * `CircuitBreaker.Core` — wrapper do Circuit Breaker do Polly com API
-    simplificada e integração com Dependency Injection.
-  * `CircuitBreaker.Telemetry` — provedor de métricas de janela deslizante.
-  * `CircuitBreaker.Adaptive` — controle adaptativo de tráfego, concorrência e
+  * `CircuitBreaker.Core` — wrapper for Polly's Circuit Breaker with a
+    simplified API and Dependency Injection integration.
+  * `CircuitBreaker.Telemetry` — sliding window metrics provider.
+  * `CircuitBreaker.Adaptive` — adaptive traffic control, concurrency, and
     rate limiting.
-  * `CircuitBreaker.Sample` — exemplo de uso do core.
-  * `CircuitBreaker.Adaptive.Sample` — exemplo de uso adaptativo.
+  * `CircuitBreaker.Sample` — core usage example.
+  * `CircuitBreaker.Adaptive.Sample` — adaptive usage example.
 
-O padrão Circuit Breaker ajuda a evitar falhas em cascata quando um serviço
-externo começa a apresentar erro. Quando a taxa de falha ultrapassa um limite
-configurado, o circuito abre e bloqueia novas chamadas até que o serviço
-tenha tempo para se recuperar.
+The Circuit Breaker pattern helps prevent cascading failures when an external
+service starts failing. When the failure rate exceeds a configured threshold,
+the circuit opens and blocks new calls until the service has time to recover.
 
-Principais características:
+Key features:
 
-  * Sliding Window baseada em tempo
+  * Time-based Sliding Window
   * Thread-safe
-  * Proteção contra race conditions
-  * CancellationToken nativo
-  * Consulta de estado em tempo real
-  * Callbacks configuráveis
-  * Integração com Dependency Injection
-  * API simplificada
+  * Protection against race conditions
+  * Native CancellationToken support
+  * Real-time state query
+  * Configurable callbacks
+  * Dependency Injection integration
+  * Simplified API
   * Factory Pattern
-  * Pronto para empacotamento NuGet
+  * Ready for NuGet packaging
 
 -------------------------------------------------------------------------------
-COMO USAR
+HOW TO USE
 -------------------------------------------------------------------------------
 
-1. Restaurar pacotes:
+1. Restore packages:
 
        dotnet restore
 
-2. Compilar:
+2. Build:
 
        dotnet build
 
-3. Executar o sample do core:
+3. Run the core sample:
 
        dotnet run --project src/CircuitBreaker.Sample
 
-4. Executar o sample adaptativo:
+4. Run the adaptive sample:
 
        dotnet run --project src/CircuitBreaker.Adaptive.Sample
 
 -------------------------------------------------------------------------------
-ARQUITETURA
+ARCHITECTURE
 -------------------------------------------------------------------------------
 
-    Sua Aplicação
+    Your Application
           |
           v
 
@@ -85,13 +84,13 @@ ARQUITETURA
     ResiliencePipeline
        (Polly v8)
 
-O `CircuitBreaker` atua como um wrapper fino sobre o `ResiliencePipeline` do
-Polly. A máquina de estados é delegada ao Polly:
+The `CircuitBreaker` acts as a thin wrapper over Polly's `ResiliencePipeline`.
+The state machine is delegated to Polly:
 
     CLOSED -> OPEN -> HALF-OPEN -> CLOSED
 
 -------------------------------------------------------------------------------
-ESTRUTURA DO REPOSITÓRIO
+REPOSITORY STRUCTURE
 -------------------------------------------------------------------------------
 
 src/
@@ -101,15 +100,15 @@ src/
   CircuitBreaker.Sample/
   CircuitBreaker.Adaptive.Sample/
 
-dist/        (possível saída de build ou pacote)
+dist/        (possible build or package output)
 README.md
 README.txt
 
 -------------------------------------------------------------------------------
-PROJECTOS NA SOLUTION
+PROJECTS IN THE SOLUTION
 -------------------------------------------------------------------------------
 
-CircuitBreaker.slnx inclui:
+CircuitBreaker.slnx includes:
 
   * CircuitBreaker.Core
   * CircuitBreaker.Telemetry
@@ -121,89 +120,89 @@ CircuitBreaker.slnx inclui:
 SLIDING WINDOW
 -------------------------------------------------------------------------------
 
-O Polly utiliza uma janela temporal para calcular a taxa de falhas.
+Polly uses a time window to calculate the failure rate.
 
-Exemplo:
+Example:
 
-    SamplingDuration = 10 segundos
+    SamplingDuration = 10 seconds
 
-    SUCESSO
-    SUCESSO
-    SUCESSO
-    FALHA
-    FALHA
-    SUCESSO
-    FALHA
-    FALHA
-    FALHA
-    SUCESSO
+    SUCCESS
+    SUCCESS
+    SUCCESS
+    FAILURE
+    FAILURE
+    SUCCESS
+    FAILURE
+    FAILURE
+    FAILURE
+    SUCCESS
 
-    Total = 10 chamadas
-    Falhas = 5
+    Total = 10 calls
+    Failures = 5
 
     FailureRatio = 50%
 
-O circuito abre quando:
+The circuit opens when:
 
-    FailureRatio >= valor configurado
+    FailureRatio >= configured value
     AND
     Total >= MinimumThroughput
 
 -------------------------------------------------------------------------------
-ESTADOS
+STATES
 -------------------------------------------------------------------------------
 
 CLOSED
-    Operação normal.
+    Normal operation.
 
 OPEN
-    Todas as chamadas são bloqueadas.
+    All calls are blocked.
 
 HALF-OPEN
-    Uma única chamada de teste é permitida.
+    A single test call is allowed.
 
-Fluxo:
+Flow:
 
     CLOSED
        |
-       | taxa de falha excedida
+       | failure rate exceeded
        v
 
     OPEN
        |
-       | BreakDuration expirado
+       | BreakDuration expired
        v
 
     HALF-OPEN
        |
-       +-- sucesso --> CLOSED
+       +-- success --> CLOSED
        |
-       +-- falha ----> OPEN
+       +-- failure ----> OPEN
 
 -------------------------------------------------------------------------------
-PROTEÇÕES DE CONCORRÊNCIA
+CONCURRENCY PROTECTIONS
 -------------------------------------------------------------------------------
 
-Problema:
-    Duas threads entrando simultaneamente em Half-Open.
+Problem:
+    Two threads entering Half-Open simultaneously.
 
-Solução:
-    Polly permite apenas uma requisição de teste.
+Solution:
+    Polly allows only one test request.
 
-Problema:
-    Race condition em contadores.
+Problem:
+    Race condition in counters.
 
-Solução:
-    Estruturas lock-free internas.
+Solution:
+    Internal lock-free structures.
 
-Problema:
-    Mudança simultânea de estado.
+Problem:
+    Simultaneous state transition.
 
-Solução:
-    Máquina de estados atômica.
+Solution:
+    Atomic state machine.
 
 -------------------------------------------------------------------------------
-COMPONENTES PRINCIPAIS
+MAIN COMPONENTS
 -------------------------------------------------------------------------------
 
 CircuitState
@@ -219,47 +218,47 @@ ICircuitBreaker
     ExecuteAsync<T>(CancellationToken)
     ExecuteAsync(CancellationToken)
 
-Propriedade:
+Property:
 
     State
 
 -------------------------------------------------------------------------------
-DEPENDÊNCIAS PRINCIPAIS
+MAIN DEPENDENCIES
 -------------------------------------------------------------------------------
 
   * Polly 8.6.6
   * Microsoft.Extensions.DependencyInjection 10.0.8
 
 -------------------------------------------------------------------------------
-LICENÇA
+LICENSE
 -------------------------------------------------------------------------------
 
-Projeto distribuído para fins educacionais e de demonstração.
+Project distributed for educational and demonstration purposes.
 
 -------------------------------------------------------------------------------
-CONFIGURAÇÃO
+CONFIGURATION
 -------------------------------------------------------------------------------
 
 FailureRatio
-    Taxa de falha necessária para abrir o circuito.
+    Failure rate required to open the circuit.
 
 SamplingDuration
-    Janela de observação.
+    Observation window.
 
 MinimumThroughput
-    Quantidade mínima de chamadas analisadas.
+    Minimum number of calls evaluated.
 
 BreakDuration
-    Tempo que o circuito permanece aberto.
+    Time the circuit stays open.
 
-Callbacks opcionais:
+Optional callbacks:
 
     OnOpened
     OnClosed
     OnHalfOpened
 
 -------------------------------------------------------------------------------
-USO BÁSICO
+BASIC USAGE
 -------------------------------------------------------------------------------
 
 var breaker = CircuitBreakerFactory.Create(
@@ -284,44 +283,43 @@ catch (BrokenCircuitException)
 CANCELLATION TOKEN
 -------------------------------------------------------------------------------
 
-A biblioteca suporta propagação completa do CancellationToken.
+The library supports full CancellationToken propagation.
 
-Quando utilizado corretamente, cancelamentos realizados pelo Polly também
-cancelam a operação do usuário.
+When used correctly, cancellations triggered by Polly also cancel the user's operation.
 
 -------------------------------------------------------------------------------
-OBSERVABILIDADE
+OBSERVABILITY
 -------------------------------------------------------------------------------
 
-A biblioteca não gera logs automaticamente.
+The library does not generate logs automatically.
 
-O consumidor define os callbacks:
+The consumer defines callbacks:
 
     OnOpened
     OnClosed
     OnHalfOpened
 
-Isso evita efeitos colaterais e mantém a biblioteca silenciosa por padrão.
+This avoids side effects and keeps the library quiet by default.
 
 -------------------------------------------------------------------------------
 DEPENDENCY INJECTION
 -------------------------------------------------------------------------------
 
-Recomendado registrar como Singleton.
+Recommended to register as a Singleton.
 
-Exemplo:
+Example:
 
     services.AddSingleton<ICircuitBreaker>(...)
 
-Também funciona naturalmente com Decorator Pattern.
+It also works naturally with the Decorator Pattern.
 
 -------------------------------------------------------------------------------
 DECORATOR PATTERN
 -------------------------------------------------------------------------------
 
-Fluxo típico:
+Typical flow:
 
-    Cliente
+    Client
         |
         v
 
@@ -333,27 +331,27 @@ Fluxo típico:
         |
         v
 
-    Serviço Real
+    Real Service
 
-O Decorator adiciona resiliência sem alterar o serviço original.
+The decorator adds resilience without changing the original service.
 
 -------------------------------------------------------------------------------
 BUILD
 -------------------------------------------------------------------------------
 
-Compilar:
+Build:
 
     dotnet build src/CircuitBreaker.slnx
 
 -------------------------------------------------------------------------------
-EXECUTAR DEMO
+RUN DEMO
 -------------------------------------------------------------------------------
 
     dotnet run --project \
         src/CircuitBreaker.Sample/CircuitBreaker.Sample.csproj
 
 -------------------------------------------------------------------------------
-GERAR PACOTE NUGET
+PACK NUGET PACKAGE
 -------------------------------------------------------------------------------
 
     dotnet pack \
@@ -362,24 +360,24 @@ GERAR PACOTE NUGET
         -o ./dist
 
 -------------------------------------------------------------------------------
-CONFIGURAÇÕES SUGERIDAS
+SUGGESTED SETTINGS
 -------------------------------------------------------------------------------
 
-Produção Conservadora
+Conservative Production
 
     FailureRatio      = 0.25
     SamplingDuration  = 30s
     MinimumThroughput = 20
     BreakDuration     = 30s
 
-Produção Agressiva
+Aggressive Production
 
     FailureRatio      = 0.50
     SamplingDuration  = 10s
     MinimumThroughput = 8
     BreakDuration     = 5s
 
-Serviço Crítico
+Critical Service
 
     FailureRatio      = 0.10
     SamplingDuration  = 60s
@@ -387,74 +385,273 @@ Serviço Crítico
     BreakDuration     = 60s
 
 -------------------------------------------------------------------------------
-DECISÕES TÉCNICAS
+TECHNICAL DECISIONS
 -------------------------------------------------------------------------------
 
-Por que Polly v8?
+Why Polly v8?
 
-    * Implementação madura
-    * Sliding Window nativa
-    * Controle robusto de concorrência
-    * Menor custo de manutenção
-    * Comunidade ativa
+    * Mature implementation
+    * Native Sliding Window
+    * Robust concurrency control
+    * Lower maintenance cost
+    * Active community
 
-Por que Wrapper?
 
-    * API simplificada
-    * Menor acoplamento
-    * Facilidade para troca futura de engine
-    * Configuração centralizada
-    * State tracking próprio
+Solution:
+    Atomic state machine.
 
-Por que volatile int?
+-------------------------------------------------------------------------------
+MAIN COMPONENTS
+-------------------------------------------------------------------------------
+
+CircuitState
+
+    Closed
+    Open
+    HalfOpen
+
+ICircuitBreaker
+
+    ExecuteAsync<T>()
+    ExecuteAsync()
+    ExecuteAsync<T>(CancellationToken)
+    ExecuteAsync(CancellationToken)
+
+Property:
+
+    State
+
+-------------------------------------------------------------------------------
+MAIN DEPENDENCIES
+-------------------------------------------------------------------------------
+
+  * Polly 8.6.6
+  * Microsoft.Extensions.DependencyInjection 10.0.8
+
+-------------------------------------------------------------------------------
+LICENSE
+-------------------------------------------------------------------------------
+
+Project distributed for educational and demonstration purposes.
+
+-------------------------------------------------------------------------------
+CONFIGURATION
+-------------------------------------------------------------------------------
+
+FailureRatio
+    Failure rate required to open the circuit.
+
+SamplingDuration
+    Observation window.
+
+MinimumThroughput
+    Minimum number of calls evaluated.
+
+BreakDuration
+    Time the circuit stays open.
+
+Optional callbacks:
+
+    OnOpened
+    OnClosed
+    OnHalfOpened
+
+-------------------------------------------------------------------------------
+BASIC USAGE
+-------------------------------------------------------------------------------
+
+var breaker = CircuitBreakerFactory.Create(
+    new CircuitBreakerOptions
+    {
+        FailureRatio = 0.5,
+        MinimumThroughput = 4
+    },
+    "PaymentAPI"
+);
+
+try
+{
+    var result = await breaker.ExecuteAsync(...);
+}
+catch (BrokenCircuitException)
+{
+    // fallback
+}
+
+-------------------------------------------------------------------------------
+CANCELLATION TOKEN
+-------------------------------------------------------------------------------
+
+The library supports full CancellationToken propagation.
+
+When used correctly, cancellations triggered by Polly also cancel the user's operation.
+
+-------------------------------------------------------------------------------
+OBSERVABILITY
+-------------------------------------------------------------------------------
+
+The library does not generate logs automatically.
+
+The consumer defines callbacks:
+
+    OnOpened
+    OnClosed
+    OnHalfOpened
+
+This avoids side effects and keeps the library quiet by default.
+
+-------------------------------------------------------------------------------
+DEPENDENCY INJECTION
+-------------------------------------------------------------------------------
+
+Recommended to register as a Singleton.
+
+Example:
+
+    services.AddSingleton<ICircuitBreaker>(...)
+
+It also works naturally with the Decorator Pattern.
+
+-------------------------------------------------------------------------------
+DECORATOR PATTERN
+-------------------------------------------------------------------------------
+
+Typical flow:
+
+    Client
+        |
+        v
+
+    MyServiceDecorator
+        |
+        v
+
+    Circuit Breaker
+        |
+        v
+
+    Real Service
+
+The decorator adds resilience without changing the original service.
+
+-------------------------------------------------------------------------------
+BUILD
+-------------------------------------------------------------------------------
+
+Build:
+
+    dotnet build src/CircuitBreaker.slnx
+
+-------------------------------------------------------------------------------
+RUN DEMO
+-------------------------------------------------------------------------------
+
+    dotnet run --project \
+        src/CircuitBreaker.Sample/CircuitBreaker.Sample.csproj
+
+-------------------------------------------------------------------------------
+PACK NUGET PACKAGE
+-------------------------------------------------------------------------------
+
+    dotnet pack \
+        src/CircuitBreaker.Core/CircuitBreaker.Core.csproj \
+        -c Release \
+        -o ./dist
+
+-------------------------------------------------------------------------------
+SUGGESTED SETTINGS
+-------------------------------------------------------------------------------
+
+Conservative Production
+
+    FailureRatio      = 0.25
+    SamplingDuration  = 30s
+    MinimumThroughput = 20
+    BreakDuration     = 30s
+
+Aggressive Production
+
+    FailureRatio      = 0.50
+    SamplingDuration  = 10s
+    MinimumThroughput = 8
+    BreakDuration     = 5s
+
+Critical Service
+
+    FailureRatio      = 0.10
+    SamplingDuration  = 60s
+    MinimumThroughput = 50
+    BreakDuration     = 60s
+
+-------------------------------------------------------------------------------
+TECHNICAL DECISIONS
+-------------------------------------------------------------------------------
+
+Why Polly v8?
+
+    * Mature implementation
+    * Native Sliding Window
+    * Robust concurrency control
+    * Lower maintenance cost
+    * Active community
+
+Why Wrapper?
+
+    * Simplified API
+    * Lower coupling
+    * Easier future engine replacement
+    * Centralized configuration
+    * Own state tracking
+
+Why volatile int?
 
     * Lock-free
-    * Leitura atômica
+    * Atomic read
     * Thread-safe
-    * Baixo overhead
+    * Low overhead
 
 -------------------------------------------------------------------------------
-EVOLUÇÃO FUTURA
+FUTURE EVOLUTION
 -------------------------------------------------------------------------------
 
-Possível evolução para um sistema de controle adaptativo de tráfego baseado em:
+Possible evolution toward an adaptive traffic control system based on:
 
     * Error Rate
     * Throughput
-    * Latência
+    * Latency
     * P95
     * P99
     * Timeouts
-    * Saturação de recursos
+    * Resource saturation
 
-Conceito:
+Concept:
 
     Health Score = 0.0 .. 1.0
 
-Ações futuras possíveis:
+Possible future actions:
 
     * Rate Limiting
     * Concurrency Control
     * Request Shedding
     * Circuit Breaker
 
-Nesta arquitetura o Circuit Breaker torna-se a última camada de proteção.
+In this architecture, the Circuit Breaker becomes the last layer of protection.
 
 -------------------------------------------------------------------------------
-DEPENDÊNCIAS
+DEPENDENCIES
 -------------------------------------------------------------------------------
 
 Polly
-    Versão 8.6.6
+    Version 8.6.6
 
 Microsoft.Extensions.DependencyInjection
-    Versão 10.0.8
+    Version 10.0.8
 
 -------------------------------------------------------------------------------
-LICENÇA
+LICENSE
 -------------------------------------------------------------------------------
 
-Projeto distribuído para fins educacionais e demonstração.
+Project distributed for educational and demonstration purposes.
 
 ===============================================================================
 EOF

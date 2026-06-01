@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "E0Nw0a6DgWk=",
+  "dgSpecHash": "fZs6Cy90mgM=",
   "success": true,
   "projectFilePath": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreaker.Core.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\User\\.nuget\\packages\\polly\\8.6.6\\polly.8.6.6.nupkg.sha512",
-    "C:\\Users\\User\\.nuget\\packages\\polly.core\\8.6.6\\polly.core.8.6.6.nupkg.sha512"
+    "C:\\Users\\User\\AppData\\Local\\Temp\\cursor-sandbox-cache\\aa6fc85620402a34297cee209e3534bb\\nuget\\polly\\8.6.6\\polly.8.6.6.nupkg.sha512",
+    "C:\\Users\\User\\AppData\\Local\\Temp\\cursor-sandbox-cache\\aa6fc85620402a34297cee209e3534bb\\nuget\\polly.core\\8.6.6\\polly.core.8.6.6.nupkg.sha512"
   ],
   "logs": []
 }

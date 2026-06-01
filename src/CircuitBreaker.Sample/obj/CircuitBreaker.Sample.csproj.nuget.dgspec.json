@@ -10,7 +10,7 @@
         "projectUniqueName": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreaker.Core.csproj",
         "projectName": "CircuitBreaker.Core",
         "projectPath": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreaker.Core.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\User\\AppData\\Local\\Temp\\cursor-sandbox-cache\\aa6fc85620402a34297cee209e3534bb\\nuget",
         "outputPath": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -349,7 +349,7 @@
         "projectUniqueName": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Sample\\CircuitBreaker.Sample.csproj",
         "projectName": "CircuitBreaker.Sample",
         "projectPath": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Sample\\CircuitBreaker.Sample.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\User\\AppData\\Local\\Temp\\cursor-sandbox-cache\\aa6fc85620402a34297cee209e3534bb\\nuget",
         "outputPath": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Sample\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [

@@ -97,13 +97,24 @@ Throughput >= MinimumThroughput
 
 ---
 
-## Nota Técnica — Evolução Futura
+## Projetos da solution
 
-### Adaptive Traffic Control
+| Projeto | Descrição |
+|---------|-----------|
+| `CircuitBreaker.Core` | Wrapper Polly v8 + factory |
+| `CircuitBreaker.Telemetry` | Janela deslizante de métricas |
+| `CircuitBreaker.Adaptive` | Rate limit, concorrência, health score, decorator |
+| `CircuitBreaker.Sample` | Demo do core |
+| `CircuitBreaker.Adaptive.Sample` | Demo adaptativo |
 
-Uma evolução possível para a biblioteca seria adicionar uma camada de controle adaptativo antes do Circuit Breaker.
+```bash
+dotnet run --project src/CircuitBreaker.Sample
+dotnet run --project src/CircuitBreaker.Adaptive.Sample
+```
 
-O Circuit Breaker continuaria atuando como a última linha de defesa.
+## Adaptive Traffic Control
+
+Camada opcional (`CircuitBreaker.Adaptive`) que atua **antes** do circuit breaker (última linha de defesa).
 
 ```text
 Telemetry

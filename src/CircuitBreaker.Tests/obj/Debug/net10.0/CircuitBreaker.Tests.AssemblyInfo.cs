@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CircuitBreaker.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f3f70d8e8c3a525e7279b377e45d4fb8c04a1411")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c4452ac4291a8b02d301d363b317165aecc38503")]
 [assembly: System.Reflection.AssemblyProductAttribute("CircuitBreaker.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CircuitBreaker.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

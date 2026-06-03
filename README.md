@@ -1,8 +1,8 @@
 # CircuitBreaker - Production-Ready Resilience Library
 
-> .NET 10 library that wraps Polly v8's **Advanced Circuit Breaker** in a simple, consistent API with adaptive traffic control, comprehensive telemetry, and production-grade reliability.
+> .NET 9 library that wraps Polly v8's **Advanced Circuit Breaker** in a simple, consistent API with adaptive traffic control, comprehensive telemetry, and production-grade reliability.
 
-**License**: GNU General Public License v3.0  
+**License**: GNU Lesser General Public License v3.0  
 **Status**: ✅ Production Ready | 28/28 Tests Passing | Optimized for High-Throughput
 
 ---
@@ -16,6 +16,7 @@ This repository contains a battle-tested abstraction layer over Polly's Circuit 
 - ✅ **Telemetry-First** - Real-time metrics collection (O(k) optimized)
 - ✅ **Adaptive Control** - Dynamic rate limiting & concurrency management
 - ✅ **Thread-Safe** - Atomic operations, no race conditions
+- ✅ **Fail-Safe** - Guaranteed resource release (try/finally) preventing deadlocks under extreme load
 - ✅ **DI Compatible** - Microsoft.Extensions.DependencyInjection ready
 - ✅ **Well-Tested** - 28 unit tests with 100% pass rate
 - ✅ **Production-Documented** - Complete tuning guide included
@@ -144,7 +145,7 @@ Dynamically adjusts rate limits and concurrency based on health state.
 
 ## System Requirements
 
-- **.NET 10.0** or later
+- **.NET 9.0** or later
 - **Polly 8.6.6+** (included as dependency)
 - Optional: Microsoft.Extensions.DependencyInjection for DI integration
 - Optional: Microsoft.Extensions.Logging for structured logging
@@ -186,7 +187,7 @@ Contributions welcome! Please ensure:
 
 ## License
 
-This project is licensed under the **GNU General Public License v3.0** - see [LICENSE](LICENSE) file for details.
+This project is licensed under the **GNU Lesser General Public License v3.0** - see [LICENSE](LICENSE) file for details.
 
 ### You are free to:
 - ✅ Use commercially
@@ -197,7 +198,7 @@ This project is licensed under the **GNU General Public License v3.0** - see [LI
 ### Under the condition that you:
 - 📋 Disclose source
 - 📋 State changes
-- 📋 Use same license (GPLv3)
+- 📋 Use same license (LGPLv3)
 
 For proprietary use, contact the maintainer for alternative licensing.
 
@@ -324,13 +325,13 @@ Health Score = 0.0 .. 1.0
 ## Main dependencies
 
 - `Polly` 8.6.6
-- `Microsoft.Extensions.DependencyInjection` 10.0.8
+- `Microsoft.Extensions.DependencyInjection` 9.0.0
 
 ---
 
 ## License
 
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+This project is licensed under the **GNU Lesser General Public License v3.0 (LGPL-3.0)**.
 See the [LICENSE](LICENSE) file for the full text. Replace the copyright holder and year
 in `LICENSE` with the appropriate values for your project if desired.
 

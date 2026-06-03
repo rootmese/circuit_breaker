@@ -48,13 +48,17 @@ public sealed class AdaptiveConcurrencyLimiter : IAdaptiveController
             return ValueTask.FromResult(false);
         }
 
-        var inFlight = Interlocked.Increment(ref _inFlight);
-        if (inFlight <= max)
+        // Atomic check-then-increment to prevent race condition
+        var current = Volatile.Read(ref _inFlight);
+        while (current < max)
         {
-            return ValueTask.FromResult(true);
+            if (Interlocked.CompareExchange(ref _inFlight, current + 1, current) == current)
+            {
+                return ValueTask.FromResult(true);
+            }
+            current = Volatile.Read(ref _inFlight);
         }
 
-        Interlocked.Decrement(ref _inFlight);
         return ValueTask.FromResult(false);
     }
 

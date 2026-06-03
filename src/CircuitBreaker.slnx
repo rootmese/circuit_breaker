@@ -4,4 +4,5 @@
   <Project Path="CircuitBreaker.Adaptive/CircuitBreaker.Adaptive.csproj" />
   <Project Path="CircuitBreaker.Sample/CircuitBreaker.Sample.csproj" />
   <Project Path="CircuitBreaker.Adaptive.Sample/CircuitBreaker.Adaptive.Sample.csproj" />
+  <Project Path="CircuitBreaker.Tests/CircuitBreaker.Tests.csproj" />
 </Solution>

@@ -27,6 +27,54 @@ public sealed class HealthScoreCalculator
         ["ResourceSaturation"] = (0.3, 0.6, 0.8)
     };
 
+    public HealthScoreCalculator()
+    {
+        // Validate thresholds on creation
+        ValidateAllThresholds();
+    }
+
+    private void ValidateAllThresholds()
+    {
+        foreach (var (metric, (healthy, warning, critical)) in _thresholds)
+        {
+            ValidateThresholdLogic(metric, healthy, warning, critical);
+        }
+    }
+
+    private static void ValidateThresholdLogic(string metric, double healthy, double warning, double critical)
+    {
+        // For "lower is better" metrics (error, latency, timeouts)
+        var lowerIsBetter = metric is "ErrorRate" or "LatencyMs" or "P99LatencyMs" or "TimeoutRate" or "ResourceSaturation";
+
+        if (lowerIsBetter)
+        {
+            if (healthy >= warning || warning >= critical)
+            {
+                throw new ArgumentException(
+                    $"Invalid thresholds for {metric} (lower-is-better): " +
+                    $"healthy ({healthy}) must be < warning ({warning}) < critical ({critical})");
+            }
+        }
+        else
+        {
+            if (healthy <= warning || warning <= critical)
+            {
+                throw new ArgumentException(
+                    $"Invalid thresholds for {metric} (higher-is-better): " +
+                    $"healthy ({healthy}) must be > warning ({warning}) > critical ({critical})");
+            }
+        }
+
+        // Ensure thresholds are not too close to avoid division instability
+        var minGap = 0.001;
+        if (Math.Abs(warning - healthy) < minGap || Math.Abs(critical - warning) < minGap)
+        {
+            throw new ArgumentException(
+                $"Thresholds for {metric} are too close together (gap < {minGap}), " +
+                $"which could cause numerical instability");
+        }
+    }
+
     public HealthScore Calculate(TelemetrySnapshot telemetry)
     {
         var scores = new Dictionary<string, double>
@@ -61,6 +109,7 @@ public sealed class HealthScoreCalculator
 
     public void ConfigureThreshold(string metric, double healthy, double warning, double critical)
     {
+        ValidateThresholdLogic(metric, healthy, warning, critical);
         _thresholds[metric] = (healthy, warning, critical);
     }
 

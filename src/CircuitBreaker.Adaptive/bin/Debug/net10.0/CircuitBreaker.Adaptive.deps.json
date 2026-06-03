@@ -1,0 +1,139 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "CircuitBreaker.Adaptive/1.0.0": {
+        "dependencies": {
+          "CircuitBreaker.Core": "1.0.0",
+          "CircuitBreaker.Telemetry": "1.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.8",
+          "System.Threading.RateLimiting": "9.0.0"
+        },
+        "runtime": {
+          "CircuitBreaker.Adaptive.dll": {}
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.8": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.826.23019"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/10.0.8": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.826.23019"
+          }
+        }
+      },
+      "Polly/8.6.6": {
+        "dependencies": {
+          "Polly.Core": "8.6.6"
+        },
+        "runtime": {
+          "lib/net6.0/Polly.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.6.6.5454"
+          }
+        }
+      },
+      "Polly.Core/8.6.6": {
+        "runtime": {
+          "lib/net8.0/Polly.Core.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.6.6.5454"
+          }
+        }
+      },
+      "System.Threading.RateLimiting/9.0.0": {
+        "runtime": {
+          "lib/net9.0/System.Threading.RateLimiting.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52809"
+          }
+        }
+      },
+      "CircuitBreaker.Core/1.0.0": {
+        "dependencies": {
+          "Polly": "8.6.6"
+        },
+        "runtime": {
+          "CircuitBreaker.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "CircuitBreaker.Telemetry/1.0.0": {
+        "runtime": {
+          "CircuitBreaker.Telemetry.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CircuitBreaker.Adaptive/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-21nbDV60SRPWGIivsyl6lqBeEJNG1sginhhfWgRrr3Ais7aQ12To25OAHQxgoiJkjqy1aQ6RxpZBGYuTi7Ge6A==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/10.0.8",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.10.0.8.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/10.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fdVadZmsC8jRP0KvKy8mO8f6GV/HyBvElfcSxEhd+5FM5boAw/01iSaCto5G3G37ApJira4A3pNaVvBv8cUiLQ==",
+      "path": "microsoft.extensions.logging.abstractions/10.0.8",
+      "hashPath": "microsoft.extensions.logging.abstractions.10.0.8.nupkg.sha512"
+    },
+    "Polly/8.6.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-czKHYJ6uGowPijuZt4kgF4njfGvWxVZ8mKBcrZ9iEtwDe9HKdF0ug6p6TwUG8EHuuufgbDU//rSBFebt5/0Fyw==",
+      "path": "polly/8.6.6",
+      "hashPath": "polly.8.6.6.nupkg.sha512"
+    },
+    "Polly.Core/8.6.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lCBL9mmhF9TZxHG3beVRkyjlLohkIC464xIAq7J7Y59C+z42hmsdUaeCKl2SIAYertOUU5TeBXyQDLDQGIKePQ==",
+      "path": "polly.core/8.6.6",
+      "hashPath": "polly.core.8.6.6.nupkg.sha512"
+    },
+    "System.Threading.RateLimiting/9.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ubv0c2B9m6VzsXVV8oXk3GrAb0yfy1Z/j+fMFXomj3FtKUHwBH92ZnfjjBE1v+ztj3CbBiBKOnCdwMXXEHYFdw==",
+      "path": "system.threading.ratelimiting/9.0.0",
+      "hashPath": "system.threading.ratelimiting.9.0.0.nupkg.sha512"
+    },
+    "CircuitBreaker.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CircuitBreaker.Telemetry/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

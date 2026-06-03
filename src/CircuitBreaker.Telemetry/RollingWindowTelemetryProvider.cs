@@ -3,32 +3,42 @@ using System.Collections.Concurrent;
 namespace CircuitBreaker.Telemetry;
 
 /// <summary>
-/// Thread-safe rolling-window telemetry derived from recorded executions only (no duplicate counters).
+/// Thread-safe rolling-window telemetry using time-based segments for O(1) cleanup.
+/// Uses bucketing to avoid O(n) scans on every collection.
 /// </summary>
 public sealed class RollingWindowTelemetryProvider : ITelemetryProvider, IExecutionTelemetryRecorder
 {
-    private readonly ConcurrentQueue<ExecutionRecord> _records = new();
+    private readonly ConcurrentDictionary<long, Bucket> _buckets = new();
     private readonly TimeSpan _windowSize;
-    private readonly int _maxRecords;
+    private readonly TimeSpan _bucketDuration = TimeSpan.FromSeconds(1);
 
     public RollingWindowTelemetryProvider(TimeSpan? windowSize = null, int maxRecords = 10_000)
     {
         _windowSize = windowSize ?? TimeSpan.FromSeconds(30);
-        _maxRecords = maxRecords;
     }
 
     public void RecordExecution(bool succeeded, double latencyMs, bool isTimeout = false)
     {
-        _records.Enqueue(new ExecutionRecord
-        {
-            Timestamp = DateTime.UtcNow,
-            Succeeded = succeeded,
-            LatencyMs = latencyMs,
-            IsTimeout = isTimeout
-        });
+        var now = DateTime.UtcNow;
+        var bucketKey = now.Ticks / _bucketDuration.Ticks;
+        
+        _buckets.AddOrUpdate(bucketKey,
+            _ => new Bucket { Records = new List<ExecutionRecord> { new(now, succeeded, latencyMs, isTimeout) } },
+            (_, bucket) =>
+            {
+                lock (bucket.Lock)
+                {
+                    bucket.Records.Add(new ExecutionRecord(now, succeeded, latencyMs, isTimeout));
+                }
+                return bucket;
+            });
 
-        while (_records.Count > _maxRecords && _records.TryDequeue(out _))
+        // Cleanup old buckets (O(k) where k = number of expired buckets, not O(n) total records)
+        var cutoffBucket = (DateTime.UtcNow - _windowSize).Ticks / _bucketDuration.Ticks;
+        var oldBuckets = _buckets.Keys.Where(k => k < cutoffBucket).ToList();
+        foreach (var key in oldBuckets)
         {
+            _buckets.TryRemove(key, out _);
         }
     }
 
@@ -39,11 +49,16 @@ public sealed class RollingWindowTelemetryProvider : ITelemetryProvider, IExecut
         var cutoff = DateTime.UtcNow - _windowSize;
         var window = new List<ExecutionRecord>();
 
-        foreach (var record in _records)
+        // Collect only from valid time-based buckets
+        var cutoffBucket = cutoff.Ticks / _bucketDuration.Ticks;
+        foreach (var (bucketKey, bucket) in _buckets)
         {
-            if (record.Timestamp >= cutoff)
+            if (bucketKey >= cutoffBucket)
             {
-                window.Add(record);
+                lock (bucket.Lock)
+                {
+                    window.AddRange(bucket.Records.Where(r => r.Timestamp >= cutoff));
+                }
             }
         }
 
@@ -99,9 +114,23 @@ public sealed class RollingWindowTelemetryProvider : ITelemetryProvider, IExecut
 
     private sealed class ExecutionRecord
     {
-        public DateTime Timestamp { get; init; }
-        public bool Succeeded { get; init; }
-        public double LatencyMs { get; init; }
-        public bool IsTimeout { get; init; }
+        public DateTime Timestamp { get; }
+        public bool Succeeded { get; }
+        public double LatencyMs { get; }
+        public bool IsTimeout { get; }
+
+        public ExecutionRecord(DateTime timestamp, bool succeeded, double latencyMs, bool isTimeout)
+        {
+            Timestamp = timestamp;
+            Succeeded = succeeded;
+            LatencyMs = latencyMs;
+            IsTimeout = isTimeout;
+        }
+    }
+
+    private sealed class Bucket
+    {
+        public object Lock { get; } = new();
+        public List<ExecutionRecord> Records { get; set; } = new();
     }
 }

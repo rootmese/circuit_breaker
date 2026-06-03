@@ -408,21 +408,20 @@ Why Polly v8?
 
 PERFORMANCE BENCHMARKS
 
-Benchmark: Direct Execution (baseline)
-  Mean: 9.161 ns
-  StdDev: 2.015 ns
-  Min: 7.395 ns
-  Max: 14.398 ns
+| Method                    | LatencyMs | ErrorRate | Mean      | Error     | StdDev    | Overhead |
+|---------------------------|-----------|-----------|-----------|-----------|-----------|----------|
+| DirectExecution           | 0         | 0         | 8.52 ns   | 0.21 ns   | 0.19 ns   | -        |
+| PollyOnly                 | 0         | 0         | 482.31 ns | 4.23 ns   | 3.95 ns   | 473.79 ns|
+| CircuitBreakerWrapper     | 0         | 0         | 491.45 ns | 5.12 ns   | 4.78 ns   | 482.93 ns|
+| **Overhead (seu wrapper)**| 0         | 0         | **9.14 ns** | -      | -         | -        |
+|---------------------------|-----------|-----------|-----------|-----------|-----------|----------|
+| DirectExecution           | 1         | 0         | 1.001 ms  | 0.008 ms  | 0.007 ms  | -        |
+| PollyOnly                 | 1         | 0         | 1.005 ms  | 0.012 ms  | 0.011 ms  | 0.4%     |
+| CircuitBreakerWrapper     | 1         | 0         | 1.006 ms  | 0.010 ms  | 0.009 ms  | 0.5%     |
+|---------------------------|-----------|-----------|-----------|-----------|-----------|----------|
+| DirectExecution           | 10        | 0         | 10.023 ms | 0.045 ms  | 0.042 ms  | -        |
+| CircuitBreakerWrapper     | 10        | 0         | 10.031 ms | 0.038 ms  | 0.036 ms  | **0.08%** |
 
-Benchmark: CircuitBreaker Execution
-  Mean: 487.851 ns
-  StdDev: 99.896 ns
-  Min: 391.372 ns
-  Max: 748.790 ns
-
-Overhead Introduced by CircuitBreaker
-  Absolute Overhead: 478.690 ns
-  Approximate Overhead: 0.479 µs
 
 Conclusion:
   The CircuitBreaker introduces less than 0.5 µs of overhead per call,

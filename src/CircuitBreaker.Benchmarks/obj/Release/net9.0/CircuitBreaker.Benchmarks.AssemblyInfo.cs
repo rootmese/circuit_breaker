@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CircuitBreaker.Benchmarks")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c4452ac4291a8b02d301d363b317165aecc38503")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67963c3f415bd6e2c35753b5111c2cb33a771c12")]
 [assembly: System.Reflection.AssemblyProductAttribute("CircuitBreaker.Benchmarks")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CircuitBreaker.Benchmarks")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

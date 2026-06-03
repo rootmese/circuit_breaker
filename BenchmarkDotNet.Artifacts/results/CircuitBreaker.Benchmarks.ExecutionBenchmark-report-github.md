@@ -8,7 +8,7 @@ Unknown processor
 
 
 ```
-| Method                  | Mean       | Error      | StdDev    | Median     | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
-|------------------------ |-----------:|-----------:|----------:|-----------:|------:|--------:|-------:|----------:|------------:|
-| DirectExecution         |   9.161 ns |  0.6946 ns |  2.015 ns |   8.201 ns |  1.04 |    0.30 |      - |         - |          NA |
-| CircuitBreakerExecution | 487.851 ns | 34.2455 ns | 99.896 ns | 457.964 ns | 55.37 |   15.08 | 0.0362 |     152 B |          NA |
+| Method                  | Mean       | Error     | StdDev    | Ratio | RatioSD | Gen0   | Allocated | Alloc Ratio |
+|------------------------ |-----------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
+| DirectExecution         |   8.849 ns | 0.2062 ns | 0.3271 ns |  1.00 |    0.05 |      - |         - |          NA |
+| CircuitBreakerExecution | 425.368 ns | 6.5498 ns | 5.8062 ns | 48.14 |    1.90 | 0.0362 |     152 B |          NA |

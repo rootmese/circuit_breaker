@@ -2,12 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+    <Version>0.4.2</Version>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Polly" Version="8.6.6" />
+    <PackageReference Include="CircuitBreaker.Telemetry" Version="0.4.2" />
+    <PackageReference Include="CircuitBreaker.Adaptive" Version="0.4.2" />
   </ItemGroup>
 
 </Project>

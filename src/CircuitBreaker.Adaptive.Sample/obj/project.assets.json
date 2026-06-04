@@ -292,7 +292,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
-          "CircuitBreaker.Core": "1.0.0",
+          "CircuitBreaker.Core": "0.4.0",
           "CircuitBreaker.Telemetry": "1.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
           "System.Threading.RateLimiting": "9.0.0"
@@ -304,7 +304,7 @@
           "bin/placeholder/CircuitBreaker.Adaptive.dll": {}
         }
       },
-      "CircuitBreaker.Core/1.0.0": {
+      "CircuitBreaker.Core/0.4.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
@@ -830,7 +830,7 @@
       "path": "../CircuitBreaker.Adaptive/CircuitBreaker.Adaptive.csproj",
       "msbuildProject": "../CircuitBreaker.Adaptive/CircuitBreaker.Adaptive.csproj"
     },
-    "CircuitBreaker.Core/1.0.0": {
+    "CircuitBreaker.Core/0.4.0": {
       "type": "project",
       "path": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj",
       "msbuildProject": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj"
@@ -844,7 +844,7 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "CircuitBreaker.Adaptive >= 1.0.0",
-      "CircuitBreaker.Core >= 1.0.0",
+      "CircuitBreaker.Core >= 0.4.0",
       "Microsoft.Extensions.DependencyInjection >= 9.0.0",
       "Microsoft.Extensions.Logging.Console >= 9.0.0"
     ]
@@ -868,6 +868,7 @@
         "net9.0"
       ],
       "sources": {
+        "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\nupkg": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

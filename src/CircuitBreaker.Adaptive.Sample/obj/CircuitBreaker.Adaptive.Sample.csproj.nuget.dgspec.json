@@ -20,6 +20,7 @@
           "net9.0"
         ],
         "sources": {
+          "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\nupkg": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -114,6 +115,7 @@
           "net9.0"
         ],
         "sources": {
+          "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\nupkg": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -189,7 +191,7 @@
       }
     },
     "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreaker.Core.csproj": {
-      "version": "1.0.0",
+      "version": "0.4.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreaker.Core.csproj",
         "projectName": "CircuitBreaker.Core",
@@ -204,6 +206,7 @@
           "net9.0"
         ],
         "sources": {
+          "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\nupkg": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -283,6 +286,7 @@
           "net9.0"
         ],
         "sources": {
+          "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\nupkg": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

@@ -1,32 +1,47 @@
-## Build outputs
-**/bin/
-**/obj/
-/dist/
-
-## User-specific files
+# .gitignore for a .NET solution
+# Build output
+/bin/
+/obj/
+# User-specific files
 *.user
 *.userosscache
+*.suo
 *.sln.docstates
-
-## Visual Studio / VS Code / JetBrains Rider cache and settings
+# VS / Rider / VSCode settings
+.vscode/
+.vscode/**
 .vs/
 .idea/
-.vscode/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-*.userprefs
-mono_crash.*
-
-## OS generated files
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-.DS_Store
-.AppleDouble
-.LSOverride
-
-## Packages
+# NuGet packages (optional – keep if you want to version packages)
 *.nupkg
+# Publish folder
+/publish/
+# Temporary files
+*.log
+*.tmp
+# Build results
+*.dll
+*.exe
+*.pdb
+# Test results
+/TestResults/
+# ReSharper
+*.DotSettings.user
+# Resharper cache
+/.resharper
+# JetBrains Rider
+*.sln.iml
+# Coverage reports
+coverage*
+# Dotnet tools folder
+/.dotnet
+# Global packages folder (if you don't want to commit local nuget cache)
+/.nuget
+# Configuration files
+appsettings.Development.json
+# Generated files
+Generated/**
+# Dist folder (if you produce client assets)
+/dist/
+# Nupkg folder (generated packages)
+/nupkg/

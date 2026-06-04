@@ -66,7 +66,7 @@
           }
         }
       },
-      "CircuitBreaker.Core/1.0.0": {
+      "CircuitBreaker.Core/0.4.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
@@ -197,7 +197,7 @@
         "polly.core.nuspec"
       ]
     },
-    "CircuitBreaker.Core/1.0.0": {
+    "CircuitBreaker.Core/0.4.2": {
       "type": "project",
       "path": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj",
       "msbuildProject": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj"
@@ -205,7 +205,7 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "CircuitBreaker.Core >= 1.0.0",
+      "CircuitBreaker.Core >= 0.4.2",
       "Microsoft.Extensions.DependencyInjection >= 9.0.0"
     ]
   },
@@ -213,7 +213,7 @@
     "C:\\Users\\User\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "0.4.2",
     "restore": {
       "projectUniqueName": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Sample\\CircuitBreaker.Sample.csproj",
       "projectName": "CircuitBreaker.Sample",
@@ -228,6 +228,7 @@
         "net9.0"
       ],
       "sources": {
+        "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\nupkg": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

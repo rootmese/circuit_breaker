@@ -12,11 +12,11 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("CircuitBreaker.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67963c3f415bd6e2c35753b5111c2cb33a771c12")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("0.4.2.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.4.2+2c7404bddb78f9631cb8dc1d2afbb803c3c42efa")]
 [assembly: System.Reflection.AssemblyProductAttribute("CircuitBreaker.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CircuitBreaker.Core")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("0.4.2.0")]
 
 // Gerado pela classe WriteCodeFragment do MSBuild.
 

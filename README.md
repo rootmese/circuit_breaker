@@ -2,7 +2,7 @@
 
 > .NET 9 library that wraps Polly v8's **Advanced Circuit Breaker** in a simple, consistent API with adaptive traffic control, comprehensive telemetry, and production-grade reliability.
 
-**License**: GNU Lesser General Public License v3.0  
+**License**: MIT 
 **Status**: ✅ Production Ready | 28/28 Tests Passing | Optimized for High-Throughput
 
 ---

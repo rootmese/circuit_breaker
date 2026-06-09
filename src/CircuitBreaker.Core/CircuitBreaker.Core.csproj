@@ -9,8 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Polly" Version="8.6.6" />
-    <PackageReference Include="CircuitBreaker.Telemetry" Version="0.4.2" />
-    <PackageReference Include="CircuitBreaker.Adaptive" Version="0.4.2" />
   </ItemGroup>
 
 </Project>

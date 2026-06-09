@@ -14,6 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CircuitBreaker.Core" Version="0.4.2" />
+    <PackageReference Include="CircuitBreaker.Telemetry" Version="0.4.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
     <PackageReference Include="System.Threading.RateLimiting" Version="9.0.0" />
   </ItemGroup>

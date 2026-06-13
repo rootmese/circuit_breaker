@@ -65,7 +65,7 @@
         <member name="P:CircuitBreaker.Core.CircuitBreakerOptions.MinimumThroughput">
             <summary>
             The minimum volume of calls that must pass through in the sampling window before the circuit breaker can trip.
-            Default is 8 calls.
+            Default is 8 calls. Must be at least 2 (Polly requirement).
             </summary>
         </member>
         <member name="P:CircuitBreaker.Core.CircuitBreakerOptions.BreakDuration">

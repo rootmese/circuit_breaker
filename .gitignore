@@ -1,7 +1,9 @@
 # .gitignore for a .NET solution
 # Build output
-/bin/
-/obj/
+**/bin/
+**/obj/
+local-packages/
+
 # User-specific files
 *.user
 *.userosscache
@@ -12,17 +14,13 @@
 .vscode/**
 .vs/
 .idea/
-# NuGet packages (optional – keep if you want to version packages)
+# NuGet packages
 *.nupkg
 # Publish folder
 /publish/
 # Temporary files
 *.log
 *.tmp
-# Build results
-*.dll
-*.exe
-*.pdb
 # Test results
 /TestResults/
 # ReSharper
@@ -35,13 +33,15 @@
 coverage*
 # Dotnet tools folder
 /.dotnet
-# Global packages folder (if you don't want to commit local nuget cache)
+# Global packages folder
 /.nuget
 # Configuration files
 appsettings.Development.json
 # Generated files
 Generated/**
-# Dist folder (if you produce client assets)
+# Dist folder
 /dist/
-# Nupkg folder (generated packages)
+# Nupkg folder
 /nupkg/
+# Benchmark artifacts
+BenchmarkDotNet.Artifacts/

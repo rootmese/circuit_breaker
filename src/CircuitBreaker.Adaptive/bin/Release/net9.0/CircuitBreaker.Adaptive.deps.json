@@ -6,10 +6,10 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v9.0": {
-      "CircuitBreaker.Adaptive/0.4.8": {
+      "CircuitBreaker.Adaptive/0.4.9": {
         "dependencies": {
-          "CircuitBreaker.Core": "0.4.8",
-          "CircuitBreaker.Telemetry": "0.4.8",
+          "CircuitBreaker.Core": "0.4.9",
+          "CircuitBreaker.Telemetry": "0.4.9",
           "Microsoft.Extensions.Hosting.Abstractions": "9.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
           "System.Threading.RateLimiting": "9.0.0"
@@ -133,29 +133,29 @@
           }
         }
       },
-      "CircuitBreaker.Core/0.4.8": {
+      "CircuitBreaker.Core/0.4.9": {
         "dependencies": {
           "Polly": "8.6.6"
         },
         "runtime": {
           "CircuitBreaker.Core.dll": {
-            "assemblyVersion": "0.4.8.0",
-            "fileVersion": "0.4.8.0"
+            "assemblyVersion": "0.4.9.0",
+            "fileVersion": "0.4.9.0"
           }
         }
       },
-      "CircuitBreaker.Telemetry/0.4.8": {
+      "CircuitBreaker.Telemetry/0.4.9": {
         "runtime": {
           "CircuitBreaker.Telemetry.dll": {
-            "assemblyVersion": "0.4.8.0",
-            "fileVersion": "0.4.8.0"
+            "assemblyVersion": "0.4.9.0",
+            "fileVersion": "0.4.9.0"
           }
         }
       }
     }
   },
   "libraries": {
-    "CircuitBreaker.Adaptive/0.4.8": {
+    "CircuitBreaker.Adaptive/0.4.9": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -237,12 +237,12 @@
       "path": "system.threading.ratelimiting/9.0.0",
       "hashPath": "system.threading.ratelimiting.9.0.0.nupkg.sha512"
     },
-    "CircuitBreaker.Core/0.4.8": {
+    "CircuitBreaker.Core/0.4.9": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "CircuitBreaker.Telemetry/0.4.8": {
+    "CircuitBreaker.Telemetry/0.4.9": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

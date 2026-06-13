@@ -473,7 +473,8 @@ rather than a statement about technical maturity.
 Notes
 -----
 
-A 0.x release should not be interpreted as unstable software.
+A 0.x release should not be interpreted as unstable software. 
+
 
 Many projects in the 0.x series may already be suitable for
 production workloads, depending on the user's requirements.

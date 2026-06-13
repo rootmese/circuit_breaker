@@ -11,6 +11,7 @@ public sealed class AdaptiveRateLimiter : IAdaptiveController, IDisposable
 {
     private readonly object _sync = new();
     private readonly ILogger _logger;
+    private readonly int _baselinePermitsPerSecond;
     private TokenBucketRateLimiter? _limiter;
     private int _permitsPerSecond;
 
@@ -19,14 +20,15 @@ public sealed class AdaptiveRateLimiter : IAdaptiveController, IDisposable
     public AdaptiveRateLimiter(int initialPermitsPerSecond = 1000, ILogger? logger = null)
     {
         _logger = logger ?? NullLogger.Instance;
-        SetPermitLimit(initialPermitsPerSecond);
+        _baselinePermitsPerSecond = Math.Max(0, initialPermitsPerSecond);
+        SetPermitLimit(_baselinePermitsPerSecond);
     }
 
     public int CurrentPermitsPerSecond => Volatile.Read(ref _permitsPerSecond);
 
     public Task ApplyControlAsync(HealthScore score, CancellationToken cancellationToken = default)
     {
-        var newLimit = HealthScoreTrafficTiers.MapToRateLimit(score);
+        var newLimit = HealthScoreTrafficTiers.MapToRateLimit(score, _baselinePermitsPerSecond);
         if (newLimit != CurrentPermitsPerSecond)
         {
             _logger.LogWarning(

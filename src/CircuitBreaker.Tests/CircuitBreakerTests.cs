@@ -135,4 +135,83 @@ public class CircuitBreakerTests
         // Assert
         Assert.True(executed);
     }
+
+    [Fact]
+    public void Create_SetsResourceName()
+    {
+        var breaker = CircuitBreakerFactory.Create(new CircuitBreakerOptions(), "PaymentAPI");
+        Assert.Equal("PaymentAPI", breaker.ResourceName);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WhenCircuitOpen_ThrowsBrokenCircuitException()
+    {
+        var breaker = CircuitBreakerFactory.Create(
+            new CircuitBreakerOptions
+            {
+                FailureRatio = 0.5,
+                MinimumThroughput = 2,
+                SamplingDuration = TimeSpan.FromSeconds(10),
+                BreakDuration = TimeSpan.FromSeconds(30),
+            },
+            "TestResource");
+
+        for (var i = 0; i < 5; i++)
+        {
+            try
+            {
+                await breaker.ExecuteAsync(async () =>
+                {
+                    await Task.Delay(1);
+                    throw new InvalidOperationException("Simulated failure");
+                });
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            catch (BrokenCircuitException)
+            {
+                break;
+            }
+        }
+
+        await Assert.ThrowsAsync<BrokenCircuitException>(async () =>
+            await breaker.ExecuteAsync(async () => await Task.FromResult("blocked")));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WhenCancelled_DoesNotTripCircuit()
+    {
+        var opened = false;
+        var breaker = CircuitBreakerFactory.Create(
+            new CircuitBreakerOptions
+            {
+                FailureRatio = 0.5,
+                MinimumThroughput = 2,
+                SamplingDuration = TimeSpan.FromSeconds(10),
+                BreakDuration = TimeSpan.FromSeconds(30),
+                OnOpened = _ => opened = true,
+            },
+            "TestResource");
+
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        try
+        {
+            await breaker.ExecuteAsync(async ct =>
+            {
+                await Task.Delay(1000, ct);
+                return "done";
+            }, cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+
+        await breaker.ExecuteAsync(async () => await Task.FromResult("still-closed"));
+
+        Assert.False(opened);
+        Assert.Equal(CircuitBreakerState.Closed, breaker.State);
+    }
 }

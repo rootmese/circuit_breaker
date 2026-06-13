@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CircuitBreaker.Telemetry</id>
+    <version>0.4.7</version>
+    <authors>CircuitBreaker.Telemetry</authors>
+    <description>Package Description</description>
+    <repository type="git" commit="4102762649c5112939330ae1455d5f3943d2ea60" />
+    <dependencies>
+      <group targetFramework="net9.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\bin\Release\net9.0\CircuitBreaker.Telemetry.dll" target="lib\net9.0\CircuitBreaker.Telemetry.dll" />
+  </files>
+</package>

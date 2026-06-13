@@ -1,0 +1,15 @@
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\bin\Release\net9.0\CircuitBreaker.Core.deps.json
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\bin\Release\net9.0\CircuitBreaker.Core.dll
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\bin\Release\net9.0\CircuitBreaker.Core.pdb
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\CircuitBreaker.Core.csproj.AssemblyReference.cache
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\CircuitBreaker.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\CircuitBreaker.Core.AssemblyInfoInputs.cache
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\CircuitBreaker.Core.AssemblyInfo.cs
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\CircuitBreaker.Core.csproj.CoreCompileInputs.cache
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\CircuitBreaker.Core.sourcelink.json
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\CircuitBreaker.Core.dll
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\refint\CircuitBreaker.Core.dll
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\CircuitBreaker.Core.pdb
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\ref\CircuitBreaker.Core.dll
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\bin\Release\net9.0\CircuitBreaker.Core.xml
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Core\obj\Release\net9.0\CircuitBreaker.Core.xml

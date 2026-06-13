@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Alessandro Silveira</Authors>
+    <Company>Alessandro Silveira</Company>
+    <Copyright>Copyright (c) 2026 Alessandro Silveira</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/rootmese/circuit_breaker</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rootmese/circuit_breaker.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+</Project>

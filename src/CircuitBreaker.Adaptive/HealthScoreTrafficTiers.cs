@@ -2,21 +2,28 @@ namespace CircuitBreaker.Adaptive;
 
 internal static class HealthScoreTrafficTiers
 {
-    public static int MapToRateLimit(HealthScore score) => score.Value switch
-    {
-        > 0.9 => 1000,
-        > 0.7 => 750,
-        > 0.4 => 500,
-        > 0.2 => 250,
-        _ => 0
-    };
+    public static int MapToRateLimit(HealthScore score, int baselinePermitsPerSecond) =>
+        ScaleLimit(score, baselinePermitsPerSecond);
 
-    public static int MapToConcurrency(HealthScore score) => score.Value switch
+    public static int MapToConcurrency(HealthScore score, int baselineMaxConcurrency) =>
+        ScaleLimit(score, baselineMaxConcurrency);
+
+    private static int ScaleLimit(HealthScore score, int baseline)
     {
-        > 0.9 => 100,
-        > 0.7 => 50,
-        > 0.4 => 20,
-        > 0.2 => 5,
-        _ => 0
-    };
+        if (baseline <= 0)
+        {
+            return 0;
+        }
+
+        var factor = score.Value switch
+        {
+            > 0.9 => 1.0,
+            > 0.7 => 0.75,
+            > 0.4 => 0.5,
+            > 0.2 => 0.25,
+            _ => 0.0
+        };
+
+        return (int)Math.Max(0, Math.Round(baseline * factor));
+    }
 }

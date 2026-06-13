@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CircuitBreaker.Telemetry</id>
+    <version>0.4.8</version>
+    <authors>Alessandro Silveira</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/rootmese/circuit_breaker</projectUrl>
+    <description>Rolling-window telemetry for circuit breaker health scoring and adaptive traffic control.</description>
+    <copyright>Copyright (c) 2026 Alessandro Silveira</copyright>
+    <tags>circuit-breaker telemetry metrics resilience</tags>
+    <repository type="git" url="https://github.com/rootmese/circuit_breaker.git" commit="b6dc2286deb5a72d6a3286232271f9c70a34ddf8" />
+    <dependencies>
+      <group targetFramework="net8.0" />
+      <group targetFramework="net9.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\bin\Release\net8.0\CircuitBreaker.Telemetry.dll" target="lib\net8.0\CircuitBreaker.Telemetry.dll" />
+    <file src="C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\bin\Release\net8.0\CircuitBreaker.Telemetry.xml" target="lib\net8.0\CircuitBreaker.Telemetry.xml" />
+    <file src="C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\bin\Release\net9.0\CircuitBreaker.Telemetry.dll" target="lib\net9.0\CircuitBreaker.Telemetry.dll" />
+    <file src="C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\bin\Release\net9.0\CircuitBreaker.Telemetry.xml" target="lib\net9.0\CircuitBreaker.Telemetry.xml" />
+    <file src="C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\README.md" target="\README.md" />
+  </files>
+</package>

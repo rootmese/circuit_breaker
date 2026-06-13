@@ -11,17 +11,19 @@ public sealed class RollingWindowTelemetryProvider : ITelemetryProvider, IExecut
     private readonly ConcurrentDictionary<long, Bucket> _buckets = new();
     private readonly TimeSpan _windowSize;
     private readonly TimeSpan _bucketDuration = TimeSpan.FromSeconds(1);
+    private readonly int _maxRecords;
 
     public RollingWindowTelemetryProvider(TimeSpan? windowSize = null, int maxRecords = 10_000)
     {
         _windowSize = windowSize ?? TimeSpan.FromSeconds(30);
+        _maxRecords = Math.Max(1, maxRecords);
     }
 
     public void RecordExecution(bool succeeded, double latencyMs, bool isTimeout = false)
     {
         var now = DateTime.UtcNow;
         var bucketKey = now.Ticks / _bucketDuration.Ticks;
-        
+
         _buckets.AddOrUpdate(bucketKey,
             _ => new Bucket { Records = new List<ExecutionRecord> { new(now, succeeded, latencyMs, isTimeout) } },
             (_, bucket) =>
@@ -33,13 +35,8 @@ public sealed class RollingWindowTelemetryProvider : ITelemetryProvider, IExecut
                 return bucket;
             });
 
-        // Cleanup old buckets (O(k) where k = number of expired buckets, not O(n) total records)
-        var cutoffBucket = (DateTime.UtcNow - _windowSize).Ticks / _bucketDuration.Ticks;
-        var oldBuckets = _buckets.Keys.Where(k => k < cutoffBucket).ToList();
-        foreach (var key in oldBuckets)
-        {
-            _buckets.TryRemove(key, out _);
-        }
+        CleanupExpiredBuckets();
+        EnforceRecordLimit();
     }
 
     public Task<TelemetrySnapshot> CollectAsync(CancellationToken cancellationToken = default)
@@ -49,7 +46,6 @@ public sealed class RollingWindowTelemetryProvider : ITelemetryProvider, IExecut
         var cutoff = DateTime.UtcNow - _windowSize;
         var window = new List<ExecutionRecord>();
 
-        // Collect only from valid time-based buckets
         var cutoffBucket = cutoff.Ticks / _bucketDuration.Ticks;
         foreach (var (bucketKey, bucket) in _buckets)
         {
@@ -90,6 +86,52 @@ public sealed class RollingWindowTelemetryProvider : ITelemetryProvider, IExecut
             ActiveConnections = active,
             Timestamp = DateTime.UtcNow
         });
+    }
+
+    private void CleanupExpiredBuckets()
+    {
+        var cutoffBucket = (DateTime.UtcNow - _windowSize).Ticks / _bucketDuration.Ticks;
+        foreach (var key in _buckets.Keys.Where(k => k < cutoffBucket).ToList())
+        {
+            _buckets.TryRemove(key, out _);
+        }
+    }
+
+    private void EnforceRecordLimit()
+    {
+        var totalRecords = _buckets.Values.Sum(bucket =>
+        {
+            lock (bucket.Lock)
+            {
+                return bucket.Records.Count;
+            }
+        });
+
+        if (totalRecords <= _maxRecords)
+        {
+            return;
+        }
+
+        var overflow = totalRecords - _maxRecords;
+        foreach (var bucket in _buckets.Values.OrderBy(b => b.Records.FirstOrDefault()?.Timestamp ?? DateTime.MinValue))
+        {
+            lock (bucket.Lock)
+            {
+                if (bucket.Records.Count == 0)
+                {
+                    continue;
+                }
+
+                var removeCount = Math.Min(overflow, bucket.Records.Count);
+                bucket.Records.RemoveRange(0, removeCount);
+                overflow -= removeCount;
+
+                if (overflow <= 0)
+                {
+                    break;
+                }
+            }
+        }
     }
 
     private static double Percentile(IReadOnlyList<double> values, double percentile)

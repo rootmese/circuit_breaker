@@ -21,7 +21,7 @@ namespace CircuitBreaker.Core
 
         /// <summary>
         /// The minimum volume of calls that must pass through in the sampling window before the circuit breaker can trip.
-        /// Default is 8 calls.
+        /// Default is 8 calls. Must be at least 2 (Polly requirement).
         /// </summary>
         public int MinimumThroughput { get; set; } = 8;
 

@@ -14,6 +14,7 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
     private readonly HealthScoreCalculator _healthCalculator;
     private readonly IReadOnlyList<IAdaptiveController> _actuators;
     private readonly ICircuitBreaker? _circuitBreaker;
+    private readonly string _resourceName;
     private readonly ILogger _logger;
     private readonly TimeSpan _controlLoopInterval;
     private readonly double _scoreSmoothingFactor;
@@ -37,6 +38,7 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
         _actuators = actuators?.ToList() ?? throw new ArgumentNullException(nameof(actuators));
         _healthCalculator = healthCalculator ?? new HealthScoreCalculator();
         _circuitBreaker = circuitBreaker;
+        _resourceName = circuitBreaker?.ResourceName ?? "Default";
         _logger = logger ?? NullLogger.Instance;
 
         var opts = options ?? new AdaptiveTrafficControlOptions();
@@ -58,7 +60,8 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
 
         _controlLoopTask = Task.Run(RunControlLoopAsync);
         _logger.LogInformation(
-            "Adaptive traffic controller started (interval {Interval}ms)",
+            "Adaptive traffic controller started for {Resource} (interval {Interval}ms)",
+            _resourceName,
             _controlLoopInterval.TotalMilliseconds);
     }
 
@@ -76,7 +79,7 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
             }
         }
 
-        _logger.LogInformation("Adaptive traffic controller stopped");
+        _logger.LogInformation("Adaptive traffic controller stopped for {Resource}", _resourceName);
     }
 
     public Task<TelemetrySnapshot> GetLatestTelemetryAsync(CancellationToken cancellationToken = default) =>
@@ -186,7 +189,8 @@ public sealed class AdaptiveTrafficController : IAsyncDisposable
         if (_circuitBreaker is not null && _currentScore.Value < 0.1)
         {
             _logger.LogCritical(
-                "Health critical ({Score:F2}); circuit state is {State} (Polly remains ultimate protection)",
+                "Health critical for {Resource} ({Score:F2}); circuit state is {State} (Polly remains ultimate protection)",
+                _resourceName,
                 _currentScore.Value,
                 _circuitBreaker.State);
         }

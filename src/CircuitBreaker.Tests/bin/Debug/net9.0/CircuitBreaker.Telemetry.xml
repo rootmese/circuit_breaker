@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CircuitBreaker.Telemetry</name>
+    </assembly>
+    <members>
+        <member name="T:CircuitBreaker.Telemetry.IExecutionTelemetryRecorder">
+            <summary>
+            Records individual execution outcomes (typically from a decorator or middleware).
+            </summary>
+        </member>
+        <member name="T:CircuitBreaker.Telemetry.ITelemetryProvider">
+            <summary>
+            Supplies aggregated telemetry for adaptive control decisions.
+            </summary>
+        </member>
+        <member name="T:CircuitBreaker.Telemetry.RollingWindowTelemetryProvider">
+            <summary>
+            Thread-safe rolling-window telemetry using time-based segments for O(1) cleanup.
+            Uses bucketing to avoid O(n) scans on every collection.
+            </summary>
+        </member>
+        <member name="T:CircuitBreaker.Telemetry.TelemetrySnapshot">
+            <summary>
+            Point-in-time metrics used to compute service health.
+            </summary>
+        </member>
+    </members>
+</doc>

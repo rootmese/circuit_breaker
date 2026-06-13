@@ -13,13 +13,19 @@ namespace CircuitBreaker.Core
         private readonly ResiliencePipeline _pipeline;
         private volatile int _state; // backing field for thread-safe reads
 
-        public CircuitBreaker(ResiliencePipeline pipeline)
+        public CircuitBreaker(ResiliencePipeline pipeline, string resourceName)
         {
             _pipeline = pipeline ?? throw new ArgumentNullException(nameof(pipeline));
+            ResourceName = string.IsNullOrWhiteSpace(resourceName)
+                ? "Default"
+                : resourceName;
         }
 
         /// <inheritdoc />
         public CircuitState State => (CircuitState)_state;
+
+        /// <inheritdoc />
+        public string ResourceName { get; }
 
         /// <summary>
         /// Updates the circuit state. Called internally by <see cref="CircuitBreakerFactory"/> event callbacks.

@@ -9,6 +9,7 @@ namespace CircuitBreaker.Adaptive;
 public sealed class AdaptiveConcurrencyLimiter : IAdaptiveController
 {
     private readonly ILogger _logger;
+    private readonly int _baselineMaxConcurrency;
     private int _maxConcurrency;
     private int _inFlight;
 
@@ -17,14 +18,15 @@ public sealed class AdaptiveConcurrencyLimiter : IAdaptiveController
     public AdaptiveConcurrencyLimiter(int initialMaxConcurrency = 100, ILogger? logger = null)
     {
         _logger = logger ?? NullLogger.Instance;
-        _maxConcurrency = initialMaxConcurrency;
+        _baselineMaxConcurrency = Math.Max(0, initialMaxConcurrency);
+        _maxConcurrency = _baselineMaxConcurrency;
     }
 
     public int CurrentMaxConcurrency => Volatile.Read(ref _maxConcurrency);
 
     public Task ApplyControlAsync(HealthScore score, CancellationToken cancellationToken = default)
     {
-        var newLimit = HealthScoreTrafficTiers.MapToConcurrency(score);
+        var newLimit = HealthScoreTrafficTiers.MapToConcurrency(score, _baselineMaxConcurrency);
         var current = CurrentMaxConcurrency;
 
         if (newLimit != current)

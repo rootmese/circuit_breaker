@@ -2,8 +2,8 @@
 
 > .NET 9 library that wraps Polly v8's **Advanced Circuit Breaker** in a simple, consistent API with adaptive traffic control, comprehensive telemetry, and production-grade reliability.
 
-**License**: MIT 
-**Status**: ✅ Production Ready | 28/28 Tests Passing | Optimized for High-Throughput
+**License**: MIT  
+**Status**: Production Ready | 32 unit tests | `net8.0` + `net9.0`
 
 ---
 
@@ -18,7 +18,7 @@ This repository contains a battle-tested abstraction layer over Polly's Circuit 
 - ✅ **Thread-Safe** - Atomic operations, no race conditions
 - ✅ **Fail-Safe** - Guaranteed resource release (try/finally) preventing deadlocks under extreme load
 - ✅ **DI Compatible** - Microsoft.Extensions.DependencyInjection ready
-- ✅ **Well-Tested** - 28 unit tests with 100% pass rate
+- ✅ **Well-Tested** - Unit tests with full pass rate
 - ✅ **Production-Documented** - Complete tuning guide included
 
 ### Included Projects
@@ -30,7 +30,7 @@ This repository contains a battle-tested abstraction layer over Polly's Circuit 
 | `CircuitBreaker.Adaptive` | Adaptive rate limiting + concurrency | ✅ |
 | `CircuitBreaker.Sample` | Core usage example | ✅ |
 | `CircuitBreaker.Adaptive.Sample` | Advanced adaptive demo | ✅ |
-| `CircuitBreaker.Tests` | 28 unit tests (NEW) | ✅ |
+| `CircuitBreaker.Tests` | Unit tests | ✅ |
 
 ---
 
@@ -145,7 +145,7 @@ Dynamically adjusts rate limits and concurrency based on health state.
 
 ## System Requirements
 
-- **.NET 9.0** or later
+- **.NET 8.0** or **.NET 9.0**
 - **Polly 8.6.6+** (included as dependency)
 - Optional: Microsoft.Extensions.DependencyInjection for DI integration
 - Optional: Microsoft.Extensions.Logging for structured logging
@@ -165,8 +165,7 @@ dotnet test src/CircuitBreaker.Tests --collect:"XPlat Code Coverage"
 dotnet test src/CircuitBreaker.Tests --filter "FullyQualifiedName~CircuitBreakerTests"
 ```
 
-**Test Results**: 28/28 passing (100% pass rate)  
-**Test Categories**:
+**Test categories**:
 - Circuit Breaker state transitions & callbacks
 - Telemetry collection & aggregation  
 - Concurrent operations (race condition verification)
@@ -187,20 +186,7 @@ Contributions welcome! Please ensure:
 
 ## License
 
-This project is licensed under the **GNU Lesser General Public License v3.0** - see [LICENSE](LICENSE) file for details.
-
-### You are free to:
-- ✅ Use commercially
-- ✅ Modify the source code
-- ✅ Distribute
-- ✅ Use privately
-
-### Under the condition that you:
-- 📋 Disclose source
-- 📋 State changes
-- 📋 Use same license (LGPLv3)
-
-For proprietary use, contact the maintainer for alternative licensing.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -209,13 +195,13 @@ For proprietary use, contact the maintainer for alternative licensing.
 - 📖 **Documentation**: [TUNING_GUIDE.md](TUNING_GUIDE.md)
 - 🐛 **Issues**: Report via GitHub Issues
 - 💬 **Discussions**: Use GitHub Discussions for questions
-- 📧 **Email**: [Add contact info]
+- 📧 **Email**: agsilveira.7@gmail.com
 
 ---
 
-**Last Updated**: June 2, 2026  
-**Version**: 1.0.0  
-**Status**: ✅ Production Ready
+**Last Updated**: June 2026  
+**Version**: 0.4.8  
+**Status**: Production Ready
 
 ## State Machine
 
@@ -326,21 +312,6 @@ Health Score = 0.0 .. 1.0
 
 - `Polly` 8.6.6
 - `Microsoft.Extensions.DependencyInjection` 9.0.0
-
----
-
-## License
-
-This project is licensed under the **GNU Lesser General Public License v3.0 (LGPL-3.0)**.
-See the [LICENSE](LICENSE) file for the full text. Replace the copyright holder and year
-in `LICENSE` with the appropriate values for your project if desired.
-
----
-
-## Support
-
-For questions or support, contact: agsilveira.7@gmail.com
-
 
 ---
 

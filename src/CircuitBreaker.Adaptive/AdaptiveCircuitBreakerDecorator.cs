@@ -17,6 +17,8 @@ public sealed class AdaptiveCircuitBreakerDecorator : ICircuitBreaker, IAsyncDis
 
     public CircuitState State => _inner.State;
 
+    public string ResourceName => _inner.ResourceName;
+
     public HealthScore CurrentHealthScore => _controller.CurrentHealthScore;
 
     private AdaptiveCircuitBreakerDecorator(

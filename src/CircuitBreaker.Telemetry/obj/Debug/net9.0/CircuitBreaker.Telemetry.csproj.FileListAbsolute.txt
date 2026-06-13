@@ -1,0 +1,14 @@
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\bin\Debug\net9.0\CircuitBreaker.Telemetry.deps.json
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\bin\Debug\net9.0\CircuitBreaker.Telemetry.dll
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\bin\Debug\net9.0\CircuitBreaker.Telemetry.pdb
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\CircuitBreaker.Telemetry.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\CircuitBreaker.Telemetry.AssemblyInfoInputs.cache
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\CircuitBreaker.Telemetry.AssemblyInfo.cs
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\CircuitBreaker.Telemetry.csproj.CoreCompileInputs.cache
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\CircuitBreaker.Telemetry.sourcelink.json
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\CircuitBreaker.Telemetry.dll
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\refint\CircuitBreaker.Telemetry.dll
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\CircuitBreaker.Telemetry.pdb
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\ref\CircuitBreaker.Telemetry.dll
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\bin\Debug\net9.0\CircuitBreaker.Telemetry.xml
+C:\Users\User\Downloads\circuit_breaker\circuit_breaker\src\CircuitBreaker.Telemetry\obj\Debug\net9.0\CircuitBreaker.Telemetry.xml

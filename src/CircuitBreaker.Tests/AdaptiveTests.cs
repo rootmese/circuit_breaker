@@ -101,7 +101,21 @@ public class AdaptiveConcurrencyLimiterTests
         await limiter.ApplyControlAsync(degradedScore);
 
         // Assert
-        Assert.True(limiter.CurrentMaxConcurrency < 100);
+        Assert.Equal(50, limiter.CurrentMaxConcurrency);
+    }
+
+    [Fact]
+    public async Task ApplyControlAsync_ScalesFromCustomBaseline()
+    {
+        // Arrange
+        var limiter = new AdaptiveConcurrencyLimiter(initialMaxConcurrency: 40);
+        var degradedScore = new HealthScore(0.75);
+
+        // Act
+        await limiter.ApplyControlAsync(degradedScore);
+
+        // Assert
+        Assert.Equal(30, limiter.CurrentMaxConcurrency);
     }
 }
 
@@ -131,7 +145,21 @@ public class AdaptiveRateLimiterTests
         await limiter.ApplyControlAsync(degradedScore);
 
         // Assert
-        Assert.True(limiter.CurrentPermitsPerSecond < 1000);
+        Assert.Equal(250, limiter.CurrentPermitsPerSecond);
+    }
+
+    [Fact]
+    public async Task ApplyControlAsync_ScalesFromCustomBaseline()
+    {
+        // Arrange
+        var limiter = new AdaptiveRateLimiter(initialPermitsPerSecond: 200);
+        var healthyScore = new HealthScore(0.95);
+
+        // Act
+        await limiter.ApplyControlAsync(healthyScore);
+
+        // Assert
+        Assert.Equal(200, limiter.CurrentPermitsPerSecond);
     }
 }
 

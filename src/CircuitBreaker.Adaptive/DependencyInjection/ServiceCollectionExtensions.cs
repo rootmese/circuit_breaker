@@ -1,6 +1,7 @@
 using CircuitBreaker.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace CircuitBreaker.Adaptive.DependencyInjection;
@@ -9,7 +10,7 @@ public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Registers <see cref="AdaptiveCircuitBreakerDecorator"/> as singleton <see cref="ICircuitBreaker"/>.
-    /// Disposes the decorator when the service provider is disposed.
+    /// Disposes the decorator when the host stops via <see cref="IHostedService"/>.
     /// </summary>
     public static IServiceCollection AddAdaptiveCircuitBreaker(
         this IServiceCollection services,
@@ -28,6 +29,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.TryAddSingleton<ICircuitBreaker>(sp => sp.GetRequiredService<AdaptiveCircuitBreakerDecorator>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, AdaptiveCircuitBreakerShutdownService>());
 
         return services;
     }

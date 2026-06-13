@@ -15,6 +15,11 @@ namespace CircuitBreaker.Core
         CircuitState State { get; }
 
         /// <summary>
+        /// Gets the friendly name of the protected resource supplied at creation time.
+        /// </summary>
+        string ResourceName { get; }
+
+        /// <summary>
         /// Executes an asynchronous operation that returns a result through the circuit breaker.
         /// </summary>
         /// <typeparam name="T">The type of the result.</typeparam>

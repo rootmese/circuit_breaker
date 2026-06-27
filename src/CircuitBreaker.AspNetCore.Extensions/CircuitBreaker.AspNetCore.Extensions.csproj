@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>CircuitBreaker.AspNetCore.Extensions</PackageId>
+    <Version>0.5.0</Version>
+    <Description>ASP.NET Core extensions for CircuitBreaker telemetry endpoints and health checks.</Description>
+    <Authors>Alessandro Silveira</Authors>
+    <Copyright>Copyright (c) 2026 Alessandro Silveira</Copyright>
+    <RepositoryUrl>https://github.com/rootmese/circuit_breaker.git</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 👇 Isso resolve todos os erros do ASP.NET Core -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    
+    <!-- Health Checks (opcional, mas mantido) -->
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CircuitBreaker.Adaptive\CircuitBreaker.Adaptive.csproj" />
+  </ItemGroup>
+
+  <!-- Inclui licença e readme (se existirem) -->
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

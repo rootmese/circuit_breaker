@@ -119,6 +119,7 @@ src/
   CircuitBreaker.Tests/
 README.md
 README.txt
+INTEGRATION_GUIDE.md
 TUNING_GUIDE.md
 TUNING_GUIDE_EN.md
 

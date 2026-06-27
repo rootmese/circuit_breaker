@@ -356,7 +356,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 ## Support
 
-- 📖 **Documentation**: [TUNING_GUIDE_EN.md](TUNING_GUIDE_EN.md) | [TUNING_GUIDE.md](TUNING_GUIDE.md)
+- 📖 **Documentation**: [INTEGRATION_GUIDE.md](INTEGRATION_GUIDE.md) | [TUNING_GUIDE_EN.md](TUNING_GUIDE_EN.md) | [TUNING_GUIDE.md](TUNING_GUIDE.md)
 - 🐛 **Issues**: Report via GitHub Issues
 - 💬 **Discussions**: Use GitHub Discussions for questions
 - 📧 **Email**: agsilveira.7@gmail.com

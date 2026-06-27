@@ -350,12 +350,12 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "CircuitBreaker.Adaptive/0.4.9": {
+      "CircuitBreaker.Adaptive/0.5.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
-          "CircuitBreaker.Core": "0.4.9",
-          "CircuitBreaker.Telemetry": "0.4.9",
+          "CircuitBreaker.Core": "0.5.0",
+          "CircuitBreaker.Telemetry": "0.5.0",
           "Microsoft.Extensions.Hosting.Abstractions": "9.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
           "System.Threading.RateLimiting": "9.0.0"
@@ -367,7 +367,7 @@
           "bin/placeholder/CircuitBreaker.Adaptive.dll": {}
         }
       },
-      "CircuitBreaker.Core/0.4.9": {
+      "CircuitBreaker.Core/0.5.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
@@ -380,11 +380,11 @@
           "bin/placeholder/CircuitBreaker.Core.dll": {}
         }
       },
-      "CircuitBreaker.Telemetry/0.4.9": {
+      "CircuitBreaker.Telemetry/0.5.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
-          "CircuitBreaker.Core": "0.4.9",
+          "CircuitBreaker.Core": "0.5.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
           "Microsoft.Extensions.Hosting.Abstractions": "9.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
@@ -979,17 +979,17 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "CircuitBreaker.Adaptive/0.4.9": {
+    "CircuitBreaker.Adaptive/0.5.0": {
       "type": "project",
       "path": "../CircuitBreaker.Adaptive/CircuitBreaker.Adaptive.csproj",
       "msbuildProject": "../CircuitBreaker.Adaptive/CircuitBreaker.Adaptive.csproj"
     },
-    "CircuitBreaker.Core/0.4.9": {
+    "CircuitBreaker.Core/0.5.0": {
       "type": "project",
       "path": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj",
       "msbuildProject": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj"
     },
-    "CircuitBreaker.Telemetry/0.4.9": {
+    "CircuitBreaker.Telemetry/0.5.0": {
       "type": "project",
       "path": "../CircuitBreaker.Telemetry/CircuitBreaker.Telemetry.csproj",
       "msbuildProject": "../CircuitBreaker.Telemetry/CircuitBreaker.Telemetry.csproj"
@@ -997,8 +997,8 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "CircuitBreaker.Adaptive >= 0.4.9",
-      "CircuitBreaker.Core >= 0.4.9",
+      "CircuitBreaker.Adaptive >= 0.5.0",
+      "CircuitBreaker.Core >= 0.5.0",
       "Microsoft.Extensions.DependencyInjection >= 9.0.0",
       "Microsoft.Extensions.Logging.Console >= 9.0.0"
     ]

@@ -41,7 +41,8 @@ Write-Host "Tag $newVersion criada."
 $packableProjects = @(
     "src/CircuitBreaker.Core/CircuitBreaker.Core.csproj",
     "src/CircuitBreaker.Telemetry/CircuitBreaker.Telemetry.csproj",
-    "src/CircuitBreaker.Adaptive/CircuitBreaker.Adaptive.csproj"
+    "src/CircuitBreaker.Adaptive/CircuitBreaker.Adaptive.csproj",
+    "src/CircuitBreaker.AspNetCore.Extensions/CircuitBreaker.AspNetCore.Extensions.csproj"
 )
 
 foreach ($project in $packableProjects) {

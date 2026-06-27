@@ -66,7 +66,7 @@
           }
         }
       },
-      "CircuitBreaker.Core/0.4.9": {
+      "CircuitBreaker.Core/0.5.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
@@ -197,7 +197,7 @@
         "polly.core.nuspec"
       ]
     },
-    "CircuitBreaker.Core/0.4.9": {
+    "CircuitBreaker.Core/0.5.0": {
       "type": "project",
       "path": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj",
       "msbuildProject": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj"
@@ -205,7 +205,7 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "CircuitBreaker.Core >= 0.4.9",
+      "CircuitBreaker.Core >= 0.5.0",
       "Microsoft.Extensions.DependencyInjection >= 9.0.0"
     ]
   },

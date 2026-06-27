@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Adaptive\\CircuitBreaker.Adaptive.csproj": {
-      "version": "0.4.9",
+      "version": "0.5.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Adaptive\\CircuitBreaker.Adaptive.csproj",
         "projectName": "CircuitBreaker.Adaptive",
@@ -157,7 +157,7 @@
       }
     },
     "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreaker.Core.csproj": {
-      "version": "0.4.9",
+      "version": "0.5.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreaker.Core.csproj",
         "projectName": "CircuitBreaker.Core",
@@ -279,7 +279,7 @@
       }
     },
     "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Telemetry\\CircuitBreaker.Telemetry.csproj": {
-      "version": "0.4.9",
+      "version": "0.5.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Telemetry\\CircuitBreaker.Telemetry.csproj",
         "projectName": "CircuitBreaker.Telemetry",

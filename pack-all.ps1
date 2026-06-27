@@ -7,7 +7,8 @@ New-Item -ItemType Directory -Path "local-packages" -Force | Out-Null
 $projects = @(
     "src/CircuitBreaker.Core",
     "src/CircuitBreaker.Telemetry",
-    "src/CircuitBreaker.Adaptive"
+    "src/CircuitBreaker.Adaptive",
+    "src/CircuitBreaker.AspNetCore.Extensions"
 )
 
 foreach ($project in $projects) {

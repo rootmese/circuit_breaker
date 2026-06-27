@@ -7,13 +7,14 @@ namespace CircuitBreaker.Adaptive;
 /// <summary>
 /// Wraps <see cref="ICircuitBreaker"/> with adaptive rate/concurrency limits and telemetry.
 /// </summary>
-public sealed class AdaptiveCircuitBreakerDecorator : ICircuitBreaker, IAsyncDisposable
+public sealed class AdaptiveCircuitBreakerDecorator : ICircuitBreaker, ICircuitBreakerSnapshotSource, IAsyncDisposable
 {
     private readonly ICircuitBreaker _inner;
     private readonly AdaptiveTrafficController _controller;
     private readonly AdaptiveRateLimiter _rateLimiter;
     private readonly AdaptiveConcurrencyLimiter _concurrencyLimiter;
     private readonly IExecutionTelemetryRecorder _telemetry;
+    private readonly Guid _instanceId = Guid.NewGuid();
 
     public CircuitState State => _inner.State;
 
@@ -137,6 +138,25 @@ public sealed class AdaptiveCircuitBreakerDecorator : ICircuitBreaker, IAsyncDis
 
     public Task<TelemetrySnapshot> GetLatestTelemetryAsync(CancellationToken cancellationToken = default) =>
         _controller.GetLatestTelemetryAsync(cancellationToken);
+
+    /// <inheritdoc />
+    public async Task<CircuitBreakerSnapshot> GetSnapshotAsync(CancellationToken cancellationToken = default)
+    {
+        var telemetry = await GetLatestTelemetryAsync(cancellationToken).ConfigureAwait(false);
+        return new CircuitBreakerSnapshot(
+            ResourceName,
+            _instanceId,
+            State,
+            telemetry.ErrorRate,
+            telemetry.LatencyMs,
+            telemetry.P99LatencyMs,
+            telemetry.Throughput,
+            telemetry.TimeoutRate,
+            telemetry.ResourceSaturation,
+            telemetry.ActiveConnections,
+            CurrentHealthScore.Value,
+            DateTimeOffset.UtcNow);
+    }
 
     public async ValueTask DisposeAsync() => await _controller.DisposeAsync().ConfigureAwait(false);
 }

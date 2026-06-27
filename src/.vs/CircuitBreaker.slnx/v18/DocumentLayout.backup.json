@@ -3,6 +3,21 @@
   "WorkspaceRootPath": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{19469796-C6D7-42CF-A374-B9E5A1FB2428}|CircuitBreaker.AspNetCore.Extensions\\CircuitBreaker.AspNetCore.Extensions.csproj|c:\\users\\user\\downloads\\circuit_breaker\\circuit_breaker\\src\\circuitbreaker.aspnetcore.extensions\\healthchecks\\circuitbreakerhealthcheck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{19469796-C6D7-42CF-A374-B9E5A1FB2428}|CircuitBreaker.AspNetCore.Extensions\\CircuitBreaker.AspNetCore.Extensions.csproj|solutionrelative:circuitbreaker.aspnetcore.extensions\\healthchecks\\circuitbreakerhealthcheck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{19469796-C6D7-42CF-A374-B9E5A1FB2428}|CircuitBreaker.AspNetCore.Extensions\\CircuitBreaker.AspNetCore.Extensions.csproj|c:\\users\\user\\downloads\\circuit_breaker\\circuit_breaker\\src\\circuitbreaker.aspnetcore.extensions\\extensions\\circuitbreakerendpointextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{19469796-C6D7-42CF-A374-B9E5A1FB2428}|CircuitBreaker.AspNetCore.Extensions\\CircuitBreaker.AspNetCore.Extensions.csproj|solutionrelative:circuitbreaker.aspnetcore.extensions\\extensions\\circuitbreakerendpointextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\dotnet\\sdk\\10.0.300\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{19469796-C6D7-42CF-A374-B9E5A1FB2428}|CircuitBreaker.AspNetCore.Extensions\\CircuitBreaker.AspNetCore.Extensions.csproj|c:\\users\\user\\downloads\\circuit_breaker\\circuit_breaker\\src\\circuitbreaker.aspnetcore.extensions\\controllers\\circuitbreakercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{19469796-C6D7-42CF-A374-B9E5A1FB2428}|CircuitBreaker.AspNetCore.Extensions\\CircuitBreaker.AspNetCore.Extensions.csproj|solutionrelative:circuitbreaker.aspnetcore.extensions\\controllers\\circuitbreakercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{0E38FAF8-629A-EABC-D02D-E3AC55B30E90}|CircuitBreaker.Core\\CircuitBreaker.Core.csproj|c:\\users\\user\\downloads\\circuit_breaker\\circuit_breaker\\src\\circuitbreaker.core\\circuitbreakerfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0E38FAF8-629A-EABC-D02D-E3AC55B30E90}|CircuitBreaker.Core\\CircuitBreaker.Core.csproj|solutionrelative:circuitbreaker.core\\circuitbreakerfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -34,47 +49,100 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Microsoft.PackageDependencyResolution.targets",
+              "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\10.0.300\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\10.0.300\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
+              "ToolTip": "C:\\Program Files\\dotnet\\sdk\\10.0.300\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\10.0.300\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
+              "ViewState": "AgIAABEBAAAAAAAAAAAAACQBAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-06-22T15:25:29.375Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CircuitBreakerController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.AspNetCore.Extensions\\Controllers\\CircuitBreakerController.cs",
+              "RelativeDocumentMoniker": "CircuitBreaker.AspNetCore.Extensions\\Controllers\\CircuitBreakerController.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.AspNetCore.Extensions\\Controllers\\CircuitBreakerController.cs",
+              "RelativeToolTip": "CircuitBreaker.AspNetCore.Extensions\\Controllers\\CircuitBreakerController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-22T13:15:15.267Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CircuitBreakerHealthCheck.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.AspNetCore.Extensions\\HealthChecks\\CircuitBreakerHealthCheck.cs",
+              "RelativeDocumentMoniker": "CircuitBreaker.AspNetCore.Extensions\\HealthChecks\\CircuitBreakerHealthCheck.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.AspNetCore.Extensions\\HealthChecks\\CircuitBreakerHealthCheck.cs",
+              "RelativeToolTip": "CircuitBreaker.AspNetCore.Extensions\\HealthChecks\\CircuitBreakerHealthCheck.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAUwC0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-22T13:14:13.825Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "CircuitBreakerEndpointExtensions.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.AspNetCore.Extensions\\Extensions\\CircuitBreakerEndpointExtensions.cs",
+              "RelativeDocumentMoniker": "CircuitBreaker.AspNetCore.Extensions\\Extensions\\CircuitBreakerEndpointExtensions.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.AspNetCore.Extensions\\Extensions\\CircuitBreakerEndpointExtensions.cs",
+              "RelativeToolTip": "CircuitBreaker.AspNetCore.Extensions\\Extensions\\CircuitBreakerEndpointExtensions.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAUwBMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-22T13:11:00.118Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "ServiceCollectionExtensions.cs",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Adaptive\\DependencyInjection\\ServiceCollectionExtensions.cs",
               "RelativeDocumentMoniker": "CircuitBreaker.Adaptive\\DependencyInjection\\ServiceCollectionExtensions.cs",
               "ToolTip": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Adaptive\\DependencyInjection\\ServiceCollectionExtensions.cs",
               "RelativeToolTip": "CircuitBreaker.Adaptive\\DependencyInjection\\ServiceCollectionExtensions.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T02:44:02.224Z"
+              "WhenOpened": "2026-06-22T12:48:41.216Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "AdaptiveCircuitBreakerDecorator.cs",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Adaptive\\AdaptiveCircuitBreakerDecorator.cs",
               "RelativeDocumentMoniker": "CircuitBreaker.Adaptive\\AdaptiveCircuitBreakerDecorator.cs",
               "ToolTip": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Adaptive\\AdaptiveCircuitBreakerDecorator.cs",
               "RelativeToolTip": "CircuitBreaker.Adaptive\\AdaptiveCircuitBreakerDecorator.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAAAE0AAAApAAAAAAAAAA==",
+              "ViewState": "AgIAADsAAAAAAAAAAIBJwE0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T02:41:44.609Z"
+              "WhenOpened": "2026-06-22T12:48:41.333Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "CircuitBreaker.cs",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Abstractions\\CircuitBreaker.cs",
               "RelativeDocumentMoniker": "CircuitBreaker.Abstractions\\CircuitBreaker.cs",
               "ToolTip": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Abstractions\\CircuitBreaker.cs",
               "RelativeToolTip": "CircuitBreaker.Abstractions\\CircuitBreaker.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA4AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T02:39:06.402Z"
+              "WhenOpened": "2026-06-22T12:48:41.391Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "CircuitBreakerFactory.cs",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreakerFactory.cs",
               "RelativeDocumentMoniker": "CircuitBreaker.Core\\CircuitBreakerFactory.cs",
@@ -82,32 +150,30 @@
               "RelativeToolTip": "CircuitBreaker.Core\\CircuitBreakerFactory.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T02:38:35.265Z",
+              "WhenOpened": "2026-06-22T12:48:41.404Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "ICircuitBreaker.cs",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Abstractions\\ICircuitBreaker.cs",
               "RelativeDocumentMoniker": "CircuitBreaker.Abstractions\\ICircuitBreaker.cs",
               "ToolTip": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Abstractions\\ICircuitBreaker.cs",
               "RelativeToolTip": "CircuitBreaker.Abstractions\\ICircuitBreaker.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T02:40:33.192Z"
+              "WhenOpened": "2026-06-22T12:48:41.423Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "CircuitState.cs",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Abstractions\\CircuitState.cs",
               "RelativeDocumentMoniker": "CircuitBreaker.Abstractions\\CircuitState.cs",
               "ToolTip": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Abstractions\\CircuitState.cs",
               "RelativeToolTip": "CircuitBreaker.Abstractions\\CircuitState.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T02:40:38.263Z"
+              "WhenOpened": "2026-06-22T12:48:41.429Z"
             }
           ]
         }

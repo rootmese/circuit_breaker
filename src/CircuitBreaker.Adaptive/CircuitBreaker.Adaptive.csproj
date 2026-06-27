@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    <Version>0.4.9</Version>
+    <Version>0.5.0</Version>
     <PackageId>CircuitBreaker.Adaptive</PackageId>
     <Description>Adaptive rate limiting and concurrency control on top of CircuitBreaker.Core.</Description>
     <PackageTags>circuit-breaker;adaptive;rate-limiting;resilience</PackageTags>

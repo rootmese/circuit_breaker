@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreaker.Core.csproj": {
-      "version": "0.4.8",
+      "version": "0.4.9",
       "restore": {
         "projectUniqueName": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Core\\CircuitBreaker.Core.csproj",
         "projectName": "CircuitBreaker.Core",

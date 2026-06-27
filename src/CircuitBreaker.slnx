@@ -1,8 +1,9 @@
 <Solution>
-  <Project Path="CircuitBreaker.Core/CircuitBreaker.Core.csproj" />
-  <Project Path="CircuitBreaker.Telemetry/CircuitBreaker.Telemetry.csproj" />
-  <Project Path="CircuitBreaker.Adaptive/CircuitBreaker.Adaptive.csproj" />
-  <Project Path="CircuitBreaker.Sample/CircuitBreaker.Sample.csproj" />
   <Project Path="CircuitBreaker.Adaptive.Sample/CircuitBreaker.Adaptive.Sample.csproj" />
+  <Project Path="CircuitBreaker.Adaptive/CircuitBreaker.Adaptive.csproj" />
+  <Project Path="CircuitBreaker.AspNetCore.Extensions/CircuitBreaker.AspNetCore.Extensions.csproj" Id="19469796-c6d7-42cf-a374-b9e5a1fb2428" />
+  <Project Path="CircuitBreaker.Core/CircuitBreaker.Core.csproj" />
+  <Project Path="CircuitBreaker.Sample/CircuitBreaker.Sample.csproj" />
+  <Project Path="CircuitBreaker.Telemetry/CircuitBreaker.Telemetry.csproj" />
   <Project Path="CircuitBreaker.Tests/CircuitBreaker.Tests.csproj" />
 </Solution>

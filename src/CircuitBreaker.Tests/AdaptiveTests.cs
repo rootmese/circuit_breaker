@@ -1,6 +1,7 @@
 using CircuitBreaker.Adaptive;
 using CircuitBreaker.Core;
 using CircuitBreaker.Telemetry;
+using Moq;
 
 namespace CircuitBreaker.Tests;
 
@@ -267,3 +268,133 @@ public class HealthScoreCalculatorTests
         Assert.Equal(0.0, HealthScore.Dead().Value);
     }
 }
+
+public class AdaptiveTrafficControllerTests
+{
+    [Fact]
+    public async Task StartAndStop_DoesNotThrow()
+    {
+        var mockTelemetry = new Moq.Mock<ITelemetryProvider>();
+        mockTelemetry.Setup(t => t.CollectAsync(Moq.It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new TelemetrySnapshot { ErrorRate = 0.0 });
+
+        var mockActuator = new Moq.Mock<IAdaptiveController>();
+        mockActuator.Setup(a => a.Name).Returns("MockActuator");
+
+        var options = new AdaptiveTrafficControlOptions
+        {
+            ControlLoopInterval = TimeSpan.FromMilliseconds(50)
+        };
+
+        var controller = new AdaptiveTrafficController(
+            mockTelemetry.Object,
+            new[] { mockActuator.Object },
+            options: options);
+
+        // Act
+        controller.Start();
+        await Task.Delay(100);
+        await controller.StopAsync();
+
+        // Assert
+        mockTelemetry.Verify(t => t.CollectAsync(Moq.It.IsAny<CancellationToken>()), Moq.Times.AtLeastOnce());
+    }
+
+    [Fact]
+    public async Task RunControlLoop_SmoothesScoreAndAppliesToActuators()
+    {
+        var mockTelemetry = new Moq.Mock<ITelemetryProvider>();
+        var telemetry = new TelemetrySnapshot
+        {
+            ErrorRate = 0.5,
+            LatencyMs = 50,
+            Throughput = 2000,
+            P99LatencyMs = 100,
+            TimeoutRate = 0.0,
+            ResourceSaturation = 0.2
+        };
+
+        mockTelemetry.Setup(t => t.CollectAsync(Moq.It.IsAny<CancellationToken>()))
+            .ReturnsAsync(telemetry);
+
+        var appliedScores = new List<HealthScore>();
+        var mockActuator = new Moq.Mock<IAdaptiveController>();
+        mockActuator.Setup(a => a.Name).Returns("MockActuator");
+        mockActuator.Setup(a => a.ApplyControlAsync(Moq.It.IsAny<HealthScore>(), Moq.It.IsAny<CancellationToken>()))
+            .Callback<HealthScore, CancellationToken>((s, c) => appliedScores.Add(s))
+            .Returns(Task.CompletedTask);
+
+        var options = new AdaptiveTrafficControlOptions
+        {
+            ControlLoopInterval = TimeSpan.FromMilliseconds(50),
+            ScoreSmoothingFactor = 0.5,
+            ScoreChangeThreshold = 0.01,
+            SuddenDegradationDelta = 0.9 // high enough to not trigger emergency
+        };
+
+        var controller = new AdaptiveTrafficController(
+            mockTelemetry.Object,
+            new[] { mockActuator.Object },
+            options: options);
+
+        // Act
+        controller.Start();
+        await Task.Delay(150);
+        await controller.StopAsync();
+
+        // Assert
+        Assert.NotEmpty(appliedScores);
+        // Initial score = 1.0, calculated score = 0.7025. With factor 0.5, first smoothed score is 0.85.
+        Assert.Contains(appliedScores, s => Math.Abs(s.Value - 0.85) < 0.02);
+    }
+
+    [Fact]
+    public async Task SuddenDegradation_AppliesEmergencyMeasures()
+    {
+        var mockTelemetry = new Moq.Mock<ITelemetryProvider>();
+        var telemetry = new TelemetrySnapshot
+        {
+            ErrorRate = 1.0,
+            LatencyMs = 1000,
+            Throughput = 0,
+            P99LatencyMs = 2000,
+            TimeoutRate = 1.0,
+            ResourceSaturation = 1.0
+        };
+
+        mockTelemetry.Setup(t => t.CollectAsync(Moq.It.IsAny<CancellationToken>()))
+            .ReturnsAsync(telemetry);
+
+        var appliedScores = new List<HealthScore>();
+        var mockActuator = new Moq.Mock<IAdaptiveController>();
+        mockActuator.Setup(a => a.Name).Returns("MockActuator");
+        mockActuator.Setup(a => a.ApplyControlAsync(Moq.It.IsAny<HealthScore>(), Moq.It.IsAny<CancellationToken>()))
+            .Callback<HealthScore, CancellationToken>((s, c) => appliedScores.Add(s))
+            .Returns(Task.CompletedTask);
+
+        var emergencyScore = new HealthScore(0.15);
+        var options = new AdaptiveTrafficControlOptions
+        {
+            ControlLoopInterval = TimeSpan.FromMilliseconds(50),
+            ScoreSmoothingFactor = 1.0,
+            ScoreChangeThreshold = 0.01,
+            SuddenDegradationDelta = 0.2, // trigger on drop from 1.0 to 0.0
+            EmergencyHealthScore = emergencyScore
+        };
+
+        var controller = new AdaptiveTrafficController(
+            mockTelemetry.Object,
+            new[] { mockActuator.Object },
+            options: options);
+
+        // Act
+        controller.Start();
+        await Task.Delay(150);
+        await controller.StopAsync();
+
+        // Assert
+        Assert.NotEmpty(appliedScores);
+    }
+}
+
+

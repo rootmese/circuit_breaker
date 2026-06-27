@@ -224,7 +224,7 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "CircuitBreaker.Core/0.4.9": {
+      "CircuitBreaker.Core/0.5.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
@@ -237,9 +237,15 @@
           "bin/placeholder/CircuitBreaker.Core.dll": {}
         }
       },
-      "CircuitBreaker.Telemetry/0.4.9": {
+      "CircuitBreaker.Telemetry/0.5.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "CircuitBreaker.Core": "0.5.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Hosting.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
+        },
         "compile": {
           "bin/placeholder/CircuitBreaker.Telemetry.dll": {}
         },
@@ -446,7 +452,7 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "CircuitBreaker.Core/0.4.9": {
+      "CircuitBreaker.Core/0.5.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
@@ -459,9 +465,15 @@
           "bin/placeholder/CircuitBreaker.Core.dll": {}
         }
       },
-      "CircuitBreaker.Telemetry/0.4.9": {
+      "CircuitBreaker.Telemetry/0.5.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CircuitBreaker.Core": "0.5.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Hosting.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
+        },
         "compile": {
           "bin/placeholder/CircuitBreaker.Telemetry.dll": {}
         },
@@ -874,12 +886,12 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "CircuitBreaker.Core/0.4.9": {
+    "CircuitBreaker.Core/0.5.0": {
       "type": "project",
       "path": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj",
       "msbuildProject": "../CircuitBreaker.Core/CircuitBreaker.Core.csproj"
     },
-    "CircuitBreaker.Telemetry/0.4.9": {
+    "CircuitBreaker.Telemetry/0.5.0": {
       "type": "project",
       "path": "../CircuitBreaker.Telemetry/CircuitBreaker.Telemetry.csproj",
       "msbuildProject": "../CircuitBreaker.Telemetry/CircuitBreaker.Telemetry.csproj"
@@ -887,15 +899,15 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "CircuitBreaker.Core >= 0.4.9",
-      "CircuitBreaker.Telemetry >= 0.4.9",
+      "CircuitBreaker.Core >= 0.5.0",
+      "CircuitBreaker.Telemetry >= 0.5.0",
       "Microsoft.Extensions.Hosting.Abstractions >= 9.0.0",
       "Microsoft.Extensions.Logging.Abstractions >= 9.0.0",
       "System.Threading.RateLimiting >= 9.0.0"
     ],
     "net9.0": [
-      "CircuitBreaker.Core >= 0.4.9",
-      "CircuitBreaker.Telemetry >= 0.4.9",
+      "CircuitBreaker.Core >= 0.5.0",
+      "CircuitBreaker.Telemetry >= 0.5.0",
       "Microsoft.Extensions.Hosting.Abstractions >= 9.0.0",
       "Microsoft.Extensions.Logging.Abstractions >= 9.0.0",
       "System.Threading.RateLimiting >= 9.0.0"
@@ -906,7 +918,7 @@
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "0.4.9",
+    "version": "0.5.0",
     "restore": {
       "projectUniqueName": "C:\\Users\\User\\Downloads\\circuit_breaker\\circuit_breaker\\src\\CircuitBreaker.Adaptive\\CircuitBreaker.Adaptive.csproj",
       "projectName": "CircuitBreaker.Adaptive",

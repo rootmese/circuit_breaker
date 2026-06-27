@@ -2,8 +2,9 @@
 CIRCUITBREAKER
 ===============================================================================
 
-.NET 9 library that wraps Polly v8's Advanced Circuit Breaker in a simple,
-thread-safe API ready for NuGet distribution.
+.NET library that wraps Polly v8's Advanced Circuit Breaker in a simple,
+thread-safe API ready for NuGet distribution, with a pluggable telemetry
+export pipeline.
 
 -------------------------------------------------------------------------------
 OVERVIEW
@@ -13,7 +14,8 @@ This repository provides:
 
   * `CircuitBreaker.Core` — wrapper for Polly's Circuit Breaker with a
     simplified API and Dependency Injection integration.
-  * `CircuitBreaker.Telemetry` — sliding window metrics provider.
+  * `CircuitBreaker.Telemetry` — sliding window metrics provider + pluggable
+    export pipeline (snapshot, publisher, background service, exporter contracts).
   * `CircuitBreaker.Adaptive` — adaptive traffic control, concurrency, and
     rate limiting.
   * `CircuitBreaker.Sample` — core usage example.
@@ -34,6 +36,7 @@ Key features:
   * Dependency Injection integration
   * Simplified API
   * Factory Pattern
+  * Pluggable Telemetry Export (Prometheus, OTel, Zabbix, custom)
   * Ready for NuGet packaging
 
 -------------------------------------------------------------------------------
@@ -56,6 +59,10 @@ HOW TO USE
 
        dotnet run --project src/CircuitBreaker.Adaptive.Sample
 
+5. Run tests:
+
+       dotnet test src/CircuitBreaker.slnx
+
 -------------------------------------------------------------------------------
 ARCHITECTURE
 -------------------------------------------------------------------------------
@@ -72,22 +79,22 @@ ARCHITECTURE
           |
           v
 
-    ICircuitBreaker
-          |
-          v
-
-    CircuitBreaker
-      (wrapper)
-          |
-          v
-
-    ResiliencePipeline
-       (Polly v8)
+    AdaptiveCircuitBreakerDecorator  <-- ICircuitBreakerSnapshotSource
+          |                                        |
+          v                               CircuitBreakerTelemetryBackgroundService
+    ICircuitBreaker                               |
+          |                               ICircuitBreakerTelemetryPublisher
+          v                                       |
+    ResiliencePipeline         +------------------+------------------+
+       (Polly v8)          ExporterA          ExporterB          ExporterN ...
 
 The `CircuitBreaker` acts as a thin wrapper over Polly's `ResiliencePipeline`.
 The state machine is delegated to Polly:
 
     CLOSED -> OPEN -> HALF-OPEN -> CLOSED
+
+The telemetry export pipeline is fully decoupled: the breaker does not know
+about exporters; it only implements ICircuitBreakerSnapshotSource.
 
 -------------------------------------------------------------------------------
 REPOSITORY STRUCTURE
@@ -96,15 +103,24 @@ REPOSITORY STRUCTURE
 src/
   CircuitBreaker.Core/
   CircuitBreaker.Telemetry/
+    DependencyInjection/
+      ServiceCollectionExtensions.cs    AddCircuitBreakerTelemetry()
+                                        AddCircuitBreakerExporter<T>()
+    CircuitBreakerSnapshot.cs           Immutable observability record
+    ICircuitBreakerSnapshotSource.cs    Decoupling abstraction
+    ICircuitBreakerMetricsExporter.cs   Implement to push metrics anywhere
+    ICircuitBreakerTelemetryPublisher.cs
+    CircuitBreakerTelemetryPublisher.cs
+    CircuitBreakerTelemetryBackgroundService.cs
   CircuitBreaker.Adaptive/
+    DependencyInjection/
   CircuitBreaker.Sample/
   CircuitBreaker.Adaptive.Sample/
   CircuitBreaker.Tests/
-
-dist/        (possible build or package output)
 README.md
 README.txt
 TUNING_GUIDE.md
+TUNING_GUIDE_EN.md
 
 -------------------------------------------------------------------------------
 PROJECTS IN THE SOLUTION
@@ -118,6 +134,64 @@ CircuitBreaker.slnx includes:
   * CircuitBreaker.Sample
   * CircuitBreaker.Adaptive.Sample
   * CircuitBreaker.Tests
+
+-------------------------------------------------------------------------------
+TELEMETRY EXPORT PIPELINE (NEW IN v0.5.0)
+-------------------------------------------------------------------------------
+
+The export pipeline lets you push live circuit breaker metrics to any external
+system without coupling the breaker itself to any monitoring tool.
+
+Types:
+
+  CircuitBreakerSnapshot (sealed record)
+      ResourceName, InstanceId, State, ErrorRate, LatencyMs, P99LatencyMs,
+      Throughput, TimeoutRate, ResourceSaturation, ActiveConnections,
+      HealthScore, Timestamp (DateTimeOffset UTC)
+
+  ICircuitBreakerSnapshotSource
+      Implemented by AdaptiveCircuitBreakerDecorator.
+      Provides GetSnapshotAsync() without creating a circular dependency
+      between CircuitBreaker.Telemetry and CircuitBreaker.Adaptive.
+
+  ICircuitBreakerMetricsExporter
+      Implement this interface to push snapshots to any sink:
+          Prometheus, OpenTelemetry, Zabbix, InfluxDB, dashboards, etc.
+
+  ICircuitBreakerTelemetryPublisher / CircuitBreakerTelemetryPublisher
+      Fans out to all registered exporters in parallel.
+      A failure in one exporter does not affect the others.
+
+  CircuitBreakerTelemetryBackgroundService (BackgroundService)
+      Collects snapshots on a configurable interval and publishes them.
+
+DI registration example:
+
+    // 1. Register the adaptive breaker (also registers ICircuitBreakerSnapshotSource)
+    services.AddAdaptiveCircuitBreaker(circuitOptions, adaptiveOptions, "PaymentAPI");
+
+    // 2. Register exporter(s)
+    services.AddCircuitBreakerExporter<MyPrometheusExporter>();
+
+    // 3. Start background export
+    services.AddCircuitBreakerTelemetry(exportInterval: TimeSpan.FromSeconds(10));
+
+Custom exporter:
+
+    public class MyPrometheusExporter : ICircuitBreakerMetricsExporter
+    {
+        public Task ExportAsync(CircuitBreakerSnapshot s, CancellationToken ct)
+        {
+            // use s.ResourceName, s.HealthScore, s.ErrorRate, s.State, etc.
+            return Task.CompletedTask;
+        }
+    }
+
+Planned exporters (community / future packages):
+
+  * CircuitBreaker.Prometheus
+  * CircuitBreaker.OpenTelemetry
+  * CircuitBreaker.Zabbix
 
 -------------------------------------------------------------------------------
 SLIDING WINDOW
@@ -208,7 +282,8 @@ Problem:
     Resource leaks and deadlocks during severe crashes.
 
 Solution:
-    Strict try-finally blocks guaranteeing concurrency lock release and telemetry recording regardless of exceptions.
+    Strict try-finally blocks guaranteeing concurrency lock release and
+    telemetry recording regardless of exceptions.
 
 -------------------------------------------------------------------------------
 MAIN COMPONENTS
@@ -230,6 +305,13 @@ ICircuitBreaker
 Property:
 
     State
+    ResourceName
+
+AdaptiveCircuitBreakerDecorator (also implements ICircuitBreakerSnapshotSource)
+
+    GetSnapshotAsync()          Returns a CircuitBreakerSnapshot
+    GetLatestTelemetryAsync()   Returns raw TelemetrySnapshot
+    CurrentHealthScore          Live HealthScore (0.0-1.0)
 
 -------------------------------------------------------------------------------
 MAIN DEPENDENCIES
@@ -237,12 +319,14 @@ MAIN DEPENDENCIES
 
   * Polly 8.6.6
   * Microsoft.Extensions.DependencyInjection 9.0.0
+  * Microsoft.Extensions.Hosting.Abstractions 9.0.0
+  * Microsoft.Extensions.Logging.Abstractions 9.0.0
 
 -------------------------------------------------------------------------------
 LICENSE
 -------------------------------------------------------------------------------
 
-Licensed under the GNU Lesser General Public License v3.0 (LGPL-3.0).
+Licensed under the MIT License.
 
 -------------------------------------------------------------------------------
 CONFIGURATION
@@ -294,7 +378,8 @@ CANCELLATION TOKEN
 
 The library supports full CancellationToken propagation.
 
-When used correctly, cancellations triggered by Polly also cancel the user's operation.
+When used correctly, cancellations triggered by Polly also cancel the user's
+operation.
 
 -------------------------------------------------------------------------------
 OBSERVABILITY
@@ -308,6 +393,12 @@ The consumer defines callbacks:
     OnClosed
     OnHalfOpened
 
+For structured metrics export, use the telemetry pipeline:
+
+    ICircuitBreakerMetricsExporter  (implement and register via DI)
+    AddCircuitBreakerTelemetry()    (registers publisher + background service)
+    AddCircuitBreakerExporter<T>()  (registers a concrete exporter)
+
 This avoids side effects and keeps the library quiet by default.
 
 -------------------------------------------------------------------------------
@@ -316,9 +407,15 @@ DEPENDENCY INJECTION
 
 Recommended to register as a Singleton.
 
-Example:
+Simple example:
 
     services.AddSingleton<ICircuitBreaker>(...)
+
+Adaptive with telemetry export:
+
+    services.AddAdaptiveCircuitBreaker(circuitOptions, adaptiveOptions, "SvcName");
+    services.AddCircuitBreakerExporter<MyExporter>();
+    services.AddCircuitBreakerTelemetry(TimeSpan.FromSeconds(10));
 
 It also works naturally with the Decorator Pattern.
 
@@ -405,6 +502,20 @@ Why Polly v8?
     * Lower maintenance cost
     * Active community
 
+Why ICircuitBreakerSnapshotSource?
+
+    Without this interface, CircuitBreaker.Telemetry would need to reference
+    CircuitBreaker.Adaptive, creating a circular dependency.
+    The interface lives in Telemetry; the Adaptive package implements it.
+    This keeps both packages independently publishable on NuGet.
+
+Why CircuitBreakerSnapshot as a sealed record?
+
+    Immutability guarantees thread-safety across the publisher fan-out.
+    DateTimeOffset (not DateTime) avoids timezone ambiguity.
+    InstanceId (Guid) allows distinguishing multiple breakers for the same
+    resource in multi-instance deployments.
+
 
 PERFORMANCE BENCHMARKS
 
@@ -424,7 +535,7 @@ PERFORMANCE BENCHMARKS
 
 
 Conclusion:
-  The CircuitBreaker introduces less than 0.5 µs of overhead per call,
+  The CircuitBreaker introduces less than 0.5 us of overhead per call,
   making it negligible for most I/O-bound workloads such as HTTP, gRPC,
   database access, message brokers, and external service integrations.
 
@@ -473,8 +584,7 @@ rather than a statement about technical maturity.
 Notes
 -----
 
-A 0.x release should not be interpreted as unstable software. 
-
+A 0.x release should not be interpreted as unstable software.
 
 Many projects in the 0.x series may already be suitable for
 production workloads, depending on the user's requirements.

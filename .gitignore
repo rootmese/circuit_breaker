@@ -1,47 +1,109 @@
 # .gitignore for a .NET solution
+
+# -------------------------
 # Build output
+# -------------------------
 **/bin/
 **/obj/
-local-packages/
 
-# User-specific files
+# -------------------------
+# NuGet
+# -------------------------
+*.nupkg
+*.snupkg
+local-packages/
+/dist/
+/nupkg/
+# Restore state
+*.lock.json
+!packages.lock.json
+
+# -------------------------
+# IDE — Visual Studio
+# -------------------------
 *.user
 *.userosscache
 *.suo
 *.sln.docstates
-# VS / Rider / VSCode settings
-.vscode/
-.vscode/**
 .vs/
+*.rsuser
+
+# -------------------------
+# IDE — VS Code
+# -------------------------
+.vscode/
+
+# -------------------------
+# IDE — JetBrains Rider / ReSharper
+# -------------------------
 .idea/
-# NuGet packages
-*.nupkg
-# Publish folder
+*.sln.iml
+*.DotSettings.user
+/.resharper
+_ReSharper*/
+*.ReSharper
+
+# -------------------------
+# Test & Coverage
+# -------------------------
+/TestResults/
+**/TestResults/
+coverage*/
+*.coveragexml
+*.cobertura.xml
+*.opencover.xml
+
+# -------------------------
+# Benchmarks
+# -------------------------
+BenchmarkDotNet.Artifacts/
+
+# -------------------------
+# Publish
+# -------------------------
 /publish/
-# Temporary files
+**/publish/
+
+# -------------------------
+# Logs & temporaries
+# -------------------------
 *.log
 *.tmp
-# Test results
-/TestResults/
-# ReSharper
-*.DotSettings.user
-# Resharper cache
-/.resharper
-# JetBrains Rider
-*.sln.iml
-# Coverage reports
-coverage*
-# Dotnet tools folder
+*.temp
+*.bak
+*.cache
+
+# -------------------------
+# .NET tools & global packages
+# -------------------------
 /.dotnet
-# Global packages folder
 /.nuget
-# Configuration files
+.tool-versions
+
+# -------------------------
+# Environment & secrets
+# -------------------------
 appsettings.Development.json
+appsettings.Local.json
+*.env
+.env
+secrets.json
+
+# -------------------------
+# OS artifacts
+# -------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -------------------------
 # Generated files
+# -------------------------
 Generated/**
-# Dist folder
-/dist/
-# Nupkg folder
-/nupkg/
-# Benchmark artifacts
-BenchmarkDotNet.Artifacts/
+*.g.cs
+*.generated.cs
+
+# -------------------------
+# Source Link / XML docs (keep .xml in output, ignore loose ones)
+# -------------------------
+*.sourcelink.json

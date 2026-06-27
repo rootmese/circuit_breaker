@@ -1,4 +1,5 @@
 using CircuitBreaker.Core;
+using CircuitBreaker.Telemetry;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -29,6 +30,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.TryAddSingleton<ICircuitBreaker>(sp => sp.GetRequiredService<AdaptiveCircuitBreakerDecorator>());
+        services.TryAddSingleton<ICircuitBreakerSnapshotSource>(sp => sp.GetRequiredService<AdaptiveCircuitBreakerDecorator>());
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, AdaptiveCircuitBreakerShutdownService>());
 
         return services;
